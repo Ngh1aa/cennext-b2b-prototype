@@ -1,24 +1,28 @@
 # Image sources
 
-All photography used by the prototype is loaded from Gainesville Industrial Electric's public website so the page no longer relies on generated/CSS placeholder imagery.
+The prototype uses high-resolution, freely usable photography from Unsplash and Pexels. The previous Gainesville Industrial Electric `*-thumb.jpg` assets were removed from the rendered experience because they were too small for the large cards and became visibly blurry when stretched.
 
-## Motor repair page
-Source page: https://www.gainesvilleindustrial.com/industrial-electric-motor-repair/
+## Unsplash
 
-- Hero / warning-sign photography: `signs-you-need-professional-motor-repair.jpg`
-- Motor repair gallery: `motorrepair1-thumb.jpg`
-- Motor repair gallery: `motorrepair2-thumb.jpg`
-- Motor repair gallery: `motorrepair3-thumb.jpg`
-- Repair vs. replace: `repair-vs-replace.jpg`
+All of the following source pages state that the images are free to use under the Unsplash License:
 
-## Facilities page
-Source page: https://www.gainesvilleindustrial.com/about-us/facilities/
+- Hero / industrial facility — LISK OBE: https://unsplash.com/photos/industrial-factory-interior-with-large-machinery-and-overhead-lighting-cdBOHC22CU4
+- Electric motor failure / worn motors — MChe Lee: https://unsplash.com/photos/several-old-dusty-electric-motors-piled-together-nq27Foc7OqY
+- Workshop / technician — Mick Henson: https://unsplash.com/photos/a-man-working-on-a-machine-in-a-factory-0-8N8xSzlVo
+- Factory floor / volume-program visual — Aditi Toys: https://unsplash.com/photos/industrial-factory-interior-with-machinery-and-equipment-J5DO_DiE3IY
+- Motor assembly / repair-vs-replace visual — TruckRun: https://unsplash.com/photos/a-man-working-on-a-machine-in-a-factory--TZcFPh253w
 
-- Inventory: `inventory2-thumb.jpg`
-- Stock / warehouse: `schaeffersstock-thumb.jpg`
-- Technician: `anthony-thumb.jpg`
-- Machined component: `machinedimpeller-thumb.jpg`
-- Parts inventory: `parts2-thumb.jpg`
-- Front counter / facility: `frontcounter2-thumb.jpg`
+Unsplash license: https://unsplash.com/license
 
-The live page also renders source links beside the relevant photographs for traceability.
+## Pexels
+
+The following source pages are marked `Free to use` by Pexels:
+
+- Technician repairing industrial equipment — Bulat843: https://www.pexels.com/photo/technician-repairing-industrial-machine-equipment-32208781/
+- Technician repairing machinery in workshop — Bulat843: https://www.pexels.com/photo/technician-repairing-machine-in-workshop-33118657/
+
+Pexels license: https://www.pexels.com/license/
+
+## Layout decision
+
+To preserve image quality, the page now uses fewer but larger editorial images instead of many small thumbnails. The second image in the motor-failure section and the decorative trust/contact photos are hidden; those sections rely on typography, badges and content instead. The services section keeps a three-image editorial mosaic with one large landscape image and two supporting crops.
