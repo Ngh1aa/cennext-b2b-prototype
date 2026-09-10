@@ -122,4 +122,14 @@
   if (sourceNote) {
     sourceNote.innerHTML = 'High-resolution photography sourced from <a href="https://unsplash.com/license" target="_blank" rel="noopener noreferrer">Unsplash</a> and <a href="https://www.pexels.com/license/" target="_blank" rel="noopener noreferrer">Pexels</a>.';
   }
+
+  // Turn the original one-page prototype navigation into a multi-page site.
+  if (!document.body.classList.contains("inner-page") && nav) {
+    const destinations = ["services.html", "programs.html", "repair-vs-replace.html", "why-gie.html"];
+    [...nav.querySelectorAll("a")].forEach((link, index) => {
+      if (destinations[index]) link.href = destinations[index];
+    });
+    const navCta = document.querySelector(".nav-cta");
+    if (navCta) navCta.href = "contact.html";
+  }
 })();
