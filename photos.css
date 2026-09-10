@@ -1,0 +1,186 @@
+/* Real-source photography layer.
+   All image URLs below come from Gainesville Industrial Electric's public website.
+   Source links are rendered in the page next to the photography. */
+
+.hero {
+  background: #091b2a url("https://www.gainesvilleindustrial.com/wp-content/uploads/signs-you-need-professional-motor-repair.jpg") center 48% / cover no-repeat;
+}
+
+.hero__machine { display: none !important; }
+.hero__backdrop {
+  z-index: 0;
+  background:
+    linear-gradient(90deg, rgba(5, 17, 27, .98) 0%, rgba(5, 17, 27, .88) 44%, rgba(5, 17, 27, .42) 72%, rgba(5, 17, 27, .25) 100%),
+    linear-gradient(0deg, rgba(5, 17, 27, .68), transparent 58%);
+}
+.hero__grid { z-index: 1; opacity: .1; }
+.hero__inner, .hero__footer { position: relative; z-index: 2; }
+.hero__footer-meta { display: flex; align-items: center; gap: 18px; }
+.hero__footer-meta .hero__location { display: block; }
+
+.photo-credit {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 10px;
+  color: #6b756f;
+  font-family: var(--font-meta);
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: .08em;
+  line-height: 1.45;
+  text-transform: uppercase;
+  border-bottom: 1px solid currentColor;
+  opacity: .82;
+}
+.photo-credit:hover { color: #a76021; opacity: 1; }
+.photo-credit--hero { margin: 0; color: rgba(255, 253, 248, .64); }
+.photo-credit--hero:hover { color: var(--amber); }
+.photo-credit--light { color: rgba(246, 242, 233, .58); }
+.photo-credit--light:hover { color: var(--amber); }
+
+.section-photo,
+.media-card {
+  margin: 0;
+}
+.section-photo img,
+.media-card img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.about-section__media {
+  width: min(1180px, calc(100% - 64px));
+  margin: 66px auto 0;
+  display: grid;
+  grid-template-columns: 1.35fr .65fr;
+  gap: 18px;
+  align-items: stretch;
+}
+.about-section__media .section-photo:first-child img { min-height: 430px; aspect-ratio: 16 / 8; }
+.about-section__media .section-photo:last-child img { min-height: 430px; aspect-ratio: 4 / 5; }
+
+.services-gallery {
+  display: grid;
+  grid-template-columns: 1.15fr .85fr .85fr;
+  gap: 16px;
+  margin: 0 0 58px;
+}
+.services-gallery .media-card:first-child { grid-row: span 2; }
+.services-gallery .media-card img { min-height: 220px; aspect-ratio: 4 / 3; }
+.services-gallery .media-card:first-child img { height: 100%; min-height: 456px; aspect-ratio: auto; }
+.services-gallery figcaption { min-height: 36px; }
+
+.program-photo {
+  margin: 0 0 34px;
+}
+.program-photo img {
+  min-height: 300px;
+  max-height: 420px;
+  aspect-ratio: 16 / 9;
+}
+
+.warning-section__visual {
+  margin-top: 40px;
+}
+.warning-section__visual img {
+  min-height: 330px;
+  aspect-ratio: 4 / 3;
+}
+
+.compare-photo {
+  margin: 0 0 52px;
+}
+.compare-photo img {
+  max-height: 520px;
+  min-height: 320px;
+  aspect-ratio: 16 / 7;
+}
+
+.trust-photo {
+  margin: 0 0 38px;
+}
+.trust-photo img {
+  min-height: 300px;
+  max-height: 420px;
+  aspect-ratio: 16 / 9;
+}
+
+.contact-photo {
+  margin: 0 0 34px;
+}
+.contact-photo img {
+  min-height: 260px;
+  max-height: 360px;
+  aspect-ratio: 4 / 3;
+}
+
+.photo-frame {
+  position: relative;
+  overflow: hidden;
+  background: rgba(9, 27, 42, .08);
+  border: 1px solid rgba(9, 27, 42, .12);
+}
+.program-section .photo-frame,
+.trust-section .photo-frame {
+  border-color: rgba(246, 242, 233, .18);
+  background: rgba(255, 255, 255, .04);
+}
+.photo-frame::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .14);
+}
+
+.photo-source-note {
+  margin-top: 42px;
+  color: rgba(246, 242, 233, .48);
+  font-size: 10px;
+  line-height: 1.6;
+}
+.photo-source-note a { color: var(--amber-soft); border-bottom: 1px solid rgba(247, 209, 142, .5); }
+
+@media (hover: hover) {
+  .photo-frame img {
+    transition: transform .7s var(--ease-out), filter .35s ease;
+  }
+  .photo-frame:hover img {
+    transform: scale(1.025);
+    filter: contrast(1.03) saturate(1.02);
+  }
+}
+
+@media (max-width: 900px) {
+  .about-section__media { width: min(100% - 40px, 680px); grid-template-columns: 1fr 1fr; }
+  .about-section__media .section-photo:first-child img,
+  .about-section__media .section-photo:last-child img { min-height: 330px; }
+  .services-gallery { grid-template-columns: 1fr 1fr; }
+  .services-gallery .media-card:first-child { grid-row: auto; grid-column: 1 / -1; }
+  .services-gallery .media-card:first-child img { min-height: 380px; aspect-ratio: 16 / 8; }
+  .hero__footer-meta { gap: 12px; }
+}
+
+@media (max-width: 720px) {
+  .hero { background-position: 58% center; }
+  .hero__backdrop {
+    background: linear-gradient(90deg, rgba(5, 17, 27, .96) 0%, rgba(5, 17, 27, .82) 68%, rgba(5, 17, 27, .55) 100%);
+  }
+  .hero__footer-meta { display: none; }
+  .about-section__media { width: min(100% - 32px, 520px); grid-template-columns: 1fr; margin-top: 44px; }
+  .about-section__media .section-photo:first-child img,
+  .about-section__media .section-photo:last-child img { min-height: 280px; aspect-ratio: 4 / 3; }
+  .services-gallery { grid-template-columns: 1fr; gap: 26px; margin-bottom: 44px; }
+  .services-gallery .media-card:first-child { grid-column: auto; }
+  .services-gallery .media-card:first-child img,
+  .services-gallery .media-card img { min-height: 260px; aspect-ratio: 4 / 3; }
+  .program-photo img,
+  .warning-section__visual img,
+  .compare-photo img,
+  .trust-photo img,
+  .contact-photo img { min-height: 250px; aspect-ratio: 4 / 3; }
+  .compare-photo { margin-bottom: 38px; }
+}
