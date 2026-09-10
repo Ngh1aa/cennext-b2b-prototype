@@ -1,13 +1,14 @@
 /* Brief-compliance layer: exact one-page content, sticky section nav, hover-only visual states. */
 body { background: var(--paper); }
 .site-nav { position: sticky; top: 0; z-index: 60; }
-.brief-nav { position: sticky; top: 76px; z-index: 55; background: #173b8f; border-top: 3px solid #ef2b2d; border-bottom: 1px solid rgba(255,255,255,.25); }
+.brief-nav { position: sticky; top: 76px; z-index: 55; background: #173b8f; border-top: 3px solid #ef2b2d; border-bottom: 1px solid rgba(255,255,255,.25); overflow-x: auto; scrollbar-width: thin; }
 .brief-nav__inner { width: min(1180px, calc(100% - 32px)); margin: 0 auto; display: grid; grid-template-columns: repeat(7, 1fr); }
 .brief-nav a { min-height: 66px; padding: 12px 10px; display: flex; align-items: center; justify-content: center; text-align: center; color: #fff; border-right: 1px solid rgba(255,255,255,.34); font-family: var(--font-display); font-size: 13px; font-weight: 800; line-height: 1.05; text-transform: uppercase; transition: background .18s ease, color .18s ease; }
 .brief-nav a:first-child { border-left: 1px solid rgba(255,255,255,.34); }
 .brief-nav a:hover { background: var(--amber); color: var(--ink); }
 .site-nav__links a { transition: color .18s ease; }
 .site-nav__links a:hover { color: #a76021; }
+#causes, #services, #programs, #warning, #compare, #trust, #contact { scroll-margin-top: 155px; }
 .hero--brief { min-height: 650px; }
 .hero--brief h1 { max-width: 900px; font-size: clamp(58px, 7vw, 102px); line-height: .88; }
 .hero--brief .hero__lead { max-width: 760px; margin-left: 0; }
@@ -19,7 +20,10 @@ body { background: var(--paper); }
 .brief-grid { display: grid; grid-template-columns: minmax(260px,.9fr) minmax(0,1.1fr); gap: 90px; align-items: start; }
 .brief-copy { max-width: 760px; }
 .brief-copy p { color: #596663; font-size: 14px; line-height: 1.8; margin: 0 0 22px; }
+.brief-copy a { border-bottom: 1px solid currentColor; transition: color .18s ease, border-color .18s ease; }
+.brief-copy a:hover { color: #a76021; border-color: var(--amber); }
 .brief-section--dark .brief-copy p { color: rgba(246,242,233,.72); }
+.brief-section--dark .brief-copy a:hover { color: var(--amber); }
 .brief-section h2 { margin-bottom: 30px; }
 .brief-section h3 { margin: 50px 0 24px; font-size: clamp(30px,3vw,44px); line-height: 1; }
 .brief-list { list-style: none; padding: 0; margin: 30px 0 0; display: grid; gap: 14px; }
@@ -40,5 +44,5 @@ body { background: var(--paper); }
 .brief-trust-badges div:hover { background: var(--amber); color: var(--ink); transform: translateY(-3px); }
 .brief-cta { display: inline-flex; margin-top: 18px; }
 .brief-external-note { margin-top: 26px; padding-top: 26px; border-top: 1px solid rgba(9,27,42,.18); color: #5b6763; line-height: 1.7; }
-@media (max-width: 900px) { .brief-nav__inner { grid-template-columns: repeat(7, minmax(150px,1fr)); width: max-content; } .brief-nav { overflow-x: auto; } .brief-grid { grid-template-columns: 1fr; gap: 45px; } .brief-media { position: static; } .brief-trust-badges { grid-template-columns: repeat(2,1fr); } }
-@media (max-width: 720px) { .brief-nav { top: 68px; } .brief-section, .compare-section.brief-compare { padding: 82px 0; } .brief-nav a { min-height: 58px; font-size: 12px; } .hero--brief { min-height: 620px; } }
+@media (max-width: 900px) { .brief-nav__inner { grid-template-columns: repeat(7, minmax(150px,1fr)); width: max-content; } .brief-grid { grid-template-columns: 1fr; gap: 45px; } .brief-media { position: static; } .brief-trust-badges { grid-template-columns: repeat(2,1fr); } }
+@media (max-width: 720px) { .brief-nav { top: 68px; } #causes, #services, #programs, #warning, #compare, #trust, #contact { scroll-margin-top: 132px; } .brief-section, .compare-section.brief-compare { padding: 82px 0; } .brief-nav a { min-height: 58px; font-size: 12px; } .hero--brief { min-height: 620px; } }
