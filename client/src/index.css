@@ -92,3 +92,34 @@ h2 { font-size: var(--text-section); }
     --text-small: 13px;
   }
 }
+
+
+/* Interaction refinement: purposeful hover states for every actionable element. */
+@media (hover: hover) {
+  .site-nav__links a { position: relative; padding: 8px 0; }
+  .site-nav__links a::after { content: ""; position: absolute; left: 0; right: 100%; bottom: 1px; height: 2px; background: var(--amber); transition: right .22s var(--ease-out); }
+  .site-nav__links a:hover { color: var(--ink); }
+  .site-nav__links a:hover::after { right: 0; }
+
+  .btn { position: relative; overflow: hidden; }
+  .btn::before { content: ""; position: absolute; inset: 0; background: rgba(255,255,255,.16); transform: translateX(-105%); transition: transform .28s var(--ease-out); }
+  .btn:hover::before { transform: translateX(0); }
+  .btn > svg { position: relative; transition: transform .22s var(--ease-out); }
+  .btn:hover > svg { transform: translate(3px, -3px); }
+  .btn:active { transform: translateY(-1px) scale(.985); }
+
+  .text-link { position: relative; }
+  .text-link > svg { transition: transform .22s var(--ease-out); }
+  .text-link:hover > svg { transform: translateX(5px); }
+
+  .capability-card__arrow { box-shadow: 0 0 0 rgba(244,173,62,0); }
+  .capability-card:hover .capability-card__arrow { box-shadow: 0 8px 18px rgba(142,91,29,.18); }
+
+  .contact-detail a { transition: color .2s var(--ease-out), border-color .2s var(--ease-out), padding-right .2s var(--ease-out); }
+  .contact-detail a:hover { border-color: var(--amber); padding-right: 8px; }
+
+  .footer-top > svg { transition: transform .22s var(--ease-out); }
+  .footer-top:hover > svg { transform: translate(3px, -3px); }
+}
+
+.btn:focus-visible, .nav-cta:focus-visible, .text-link:focus-visible, .site-nav__links a:focus-visible, .capability-card:focus-visible, .contact-detail a:focus-visible, .footer-top:focus-visible { outline: 2px solid var(--amber); outline-offset: 4px; }
