@@ -1,0 +1,269 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GIE Web Design System</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,600;0,700;0,800;0,900;1,700;1,800&family=Manrope:wght@400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --ink: #091b2a;
+      --ink-soft: #17394e;
+      --paper: #f6f2e9;
+      --paper-deep: #ebe4d7;
+      --blue: #d9e9ec;
+      --blue-deep: #bcd8de;
+      --amber: #f4ad3e;
+      --amber-soft: #f7d18e;
+      --white: #fffdf8;
+      --muted: #77807c;
+      --line: rgba(9, 27, 42, .16);
+      --line-light: rgba(255, 253, 248, .22);
+      --font-display: "Barlow Condensed", Impact, sans-serif;
+      --font-body: "Manrope", Arial, sans-serif;
+      --font-meta: "Space Mono", monospace;
+      --radius: 0px;
+      --space-1: 8px;
+      --space-2: 16px;
+      --space-3: 24px;
+      --space-4: 32px;
+      --space-5: 48px;
+      --space-6: 64px;
+      --space-7: 96px;
+      --container: 1180px;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      background: var(--paper);
+      color: var(--ink);
+      font-family: var(--font-body);
+      -webkit-font-smoothing: antialiased;
+    }
+    a { color: inherit; text-decoration: none; }
+    h1,h2,h3,h4,p { margin: 0; }
+    h1,h2,h3,h4 {
+      font-family: var(--font-display);
+      text-transform: uppercase;
+      letter-spacing: -.02em;
+    }
+    .shell { width: min(var(--container), calc(100% - 48px)); margin: 0 auto; }
+    .hero {
+      background: var(--ink);
+      color: var(--white);
+      padding: 88px 0 72px;
+      border-bottom: 8px solid var(--amber);
+    }
+    .eyebrow {
+      font-family: var(--font-meta);
+      color: var(--amber-soft);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .16em;
+      text-transform: uppercase;
+      margin-bottom: 18px;
+    }
+    .hero h1 { font-size: clamp(58px, 8vw, 108px); line-height: .84; max-width: 850px; }
+    .hero p { margin-top: 26px; max-width: 760px; color: rgba(255,255,255,.72); line-height: 1.8; }
+    .section { padding: 80px 0; border-bottom: 1px solid var(--line); }
+    .section-head { display: grid; grid-template-columns: 220px 1fr; gap: 40px; margin-bottom: 42px; }
+    .section-kicker { font-family: var(--font-meta); font-size: 10px; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); }
+    .section h2 { font-size: clamp(40px, 5vw, 70px); line-height: .9; }
+    .grid { display: grid; gap: 18px; }
+    .grid-2 { grid-template-columns: repeat(2, 1fr); }
+    .grid-3 { grid-template-columns: repeat(3, 1fr); }
+    .grid-4 { grid-template-columns: repeat(4, 1fr); }
+    .card { border: 1px solid var(--line); padding: 24px; background: rgba(255,255,255,.28); }
+    .token-label { font-family: var(--font-meta); font-size: 10px; text-transform: uppercase; letter-spacing: .12em; color: var(--muted); margin-bottom: 10px; }
+    .swatch { min-height: 112px; border: 1px solid rgba(0,0,0,.08); margin-bottom: 14px; }
+    .swatch.ink { background: var(--ink); }
+    .swatch.ink-soft { background: var(--ink-soft); }
+    .swatch.paper { background: var(--paper); }
+    .swatch.paper-deep { background: var(--paper-deep); }
+    .swatch.blue { background: var(--blue); }
+    .swatch.blue-deep { background: var(--blue-deep); }
+    .swatch.amber { background: var(--amber); }
+    .swatch.amber-soft { background: var(--amber-soft); }
+    code { font-family: var(--font-meta); font-size: 11px; }
+    .type-sample { border-top: 1px solid var(--line); padding: 24px 0; display: grid; grid-template-columns: 190px 1fr; gap: 32px; align-items: start; }
+    .display-xl { font-family: var(--font-display); font-size: clamp(58px, 7vw, 96px); line-height: .85; font-weight: 800; text-transform: uppercase; }
+    .display-lg { font-family: var(--font-display); font-size: clamp(42px, 5vw, 72px); line-height: .9; font-weight: 800; text-transform: uppercase; }
+    .display-md { font-family: var(--font-display); font-size: 34px; line-height: 1; font-weight: 800; text-transform: uppercase; }
+    .body-lg { font-size: 18px; line-height: 1.7; max-width: 760px; }
+    .body-md { font-size: 14px; line-height: 1.8; max-width: 760px; }
+    .meta { font-family: var(--font-meta); font-size: 10px; letter-spacing: .14em; text-transform: uppercase; font-weight: 700; }
+    .button-row { display: flex; flex-wrap: wrap; gap: 16px; }
+    .btn { display: inline-flex; align-items: center; gap: 10px; min-height: 50px; padding: 0 20px; border: 1px solid var(--ink); font-size: 11px; font-weight: 800; letter-spacing: .09em; text-transform: uppercase; transition: .2s ease; }
+    .btn-primary { background: var(--amber); }
+    .btn-dark { background: var(--ink); color: var(--paper); }
+    .btn-outline { background: transparent; }
+    .btn:hover { transform: translateY(-3px); }
+    .btn-primary:hover { background: var(--white); }
+    .btn-dark:hover { background: var(--ink-soft); }
+    .btn-outline:hover { background: var(--ink); color: var(--paper); }
+    .nav-demo { position: relative; background: var(--paper); border: 1px solid var(--line); }
+    .nav-demo__top { min-height: 74px; display: flex; align-items: center; justify-content: space-between; padding: 0 22px; border-bottom: 1px solid var(--line); }
+    .brand { font-family: var(--font-display); font-size: 24px; font-weight: 800; letter-spacing: .12em; }
+    .nav-links { display: flex; gap: 24px; font-family: var(--font-meta); font-size: 9px; text-transform: uppercase; font-weight: 700; }
+    .section-nav { display: grid; grid-template-columns: repeat(4, 1fr); background: #173b8f; border-top: 3px solid #ef2b2d; }
+    .section-nav a { min-height: 58px; display: flex; align-items: center; justify-content: center; text-align: center; color: white; padding: 10px; border-right: 1px solid rgba(255,255,255,.25); font-family: var(--font-display); text-transform: uppercase; font-weight: 800; transition: .18s ease; }
+    .section-nav a:hover { background: var(--amber); color: var(--ink); }
+    .spacing-demo { display: grid; gap: 12px; }
+    .space-row { display: flex; align-items: center; gap: 20px; }
+    .space-bar { height: 18px; background: var(--amber); }
+    .s1 { width: 8px; } .s2 { width: 16px; } .s3 { width: 24px; } .s4 { width: 32px; } .s5 { width: 48px; } .s6 { width: 64px; } .s7 { width: 96px; }
+    .rule-list { display: grid; gap: 12px; }
+    .rule { padding: 18px 20px; border-left: 4px solid var(--amber); background: var(--paper-deep); line-height: 1.7; }
+    .dark-surface { background: var(--ink); color: var(--paper); }
+    .dark-surface .card { border-color: var(--line-light); background: rgba(255,255,255,.04); }
+    .dark-surface .token-label { color: rgba(255,255,255,.55); }
+    .footer { padding: 48px 0; background: var(--ink); color: var(--paper); }
+    .footer p { color: rgba(255,255,255,.62); margin-top: 12px; }
+    @media (max-width: 900px) {
+      .section-head, .type-sample { grid-template-columns: 1fr; }
+      .grid-4, .grid-3 { grid-template-columns: repeat(2,1fr); }
+      .section-nav { grid-template-columns: repeat(2,1fr); }
+    }
+    @media (max-width: 620px) {
+      .shell { width: min(100% - 28px, var(--container)); }
+      .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; }
+      .nav-links { display: none; }
+      .section-nav { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <header class="hero">
+    <div class="shell">
+      <div class="eyebrow">Gainesville Industrial Electric / UI Foundation</div>
+      <h1>Web Design System</h1>
+      <p>This page documents the visual language used across the industrial electric motor repair website: color, typography, spacing, navigation, buttons, content surfaces and interaction patterns.</p>
+    </div>
+  </header>
+
+  <main>
+    <section class="section">
+      <div class="shell">
+        <div class="section-head"><div class="section-kicker">01 / Foundation</div><h2>Color System</h2></div>
+        <div class="grid grid-4">
+          <div class="card"><div class="swatch ink"></div><div class="token-label">Ink / Primary Navy</div><code>#091B2A</code></div>
+          <div class="card"><div class="swatch ink-soft"></div><div class="token-label">Ink Soft</div><code>#17394E</code></div>
+          <div class="card"><div class="swatch amber"></div><div class="token-label">Amber / Accent</div><code>#F4AD3E</code></div>
+          <div class="card"><div class="swatch amber-soft"></div><div class="token-label">Amber Soft</div><code>#F7D18E</code></div>
+          <div class="card"><div class="swatch paper"></div><div class="token-label">Paper</div><code>#F6F2E9</code></div>
+          <div class="card"><div class="swatch paper-deep"></div><div class="token-label">Paper Deep</div><code>#EBE4D7</code></div>
+          <div class="card"><div class="swatch blue"></div><div class="token-label">Pale Blue</div><code>#D9E9EC</code></div>
+          <div class="card"><div class="swatch blue-deep"></div><div class="token-label">Blue Deep</div><code>#BCD8DE</code></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="shell">
+        <div class="section-head"><div class="section-kicker">02 / Type</div><h2>Typography</h2></div>
+        <div class="type-sample"><div class="token-label">Display XL / Barlow Condensed 800</div><div class="display-xl">Industrial Electric Motor Repair</div></div>
+        <div class="type-sample"><div class="token-label">Display LG / Barlow Condensed 800</div><div class="display-lg">Repair Capabilities</div></div>
+        <div class="type-sample"><div class="token-label">Display MD / Barlow Condensed 800</div><div class="display-md">Factory Authorized Service</div></div>
+        <div class="type-sample"><div class="token-label">Body LG / Manrope</div><p class="body-lg">Use for hero introductions, lead paragraphs and content that needs a more editorial reading rhythm.</p></div>
+        <div class="type-sample"><div class="token-label">Body MD / Manrope</div><p class="body-md">Use for supporting copy, technical explanations, lists and long-form service information. Prioritize readability over decoration.</p></div>
+        <div class="type-sample"><div class="token-label">Meta / Space Mono 700</div><div class="meta">01 / 07 · Repair capability · 24/7 support</div></div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="shell">
+        <div class="section-head"><div class="section-kicker">03 / Layout</div><h2>Spacing & Grid</h2></div>
+        <div class="grid grid-2">
+          <div class="card">
+            <div class="token-label">Spacing scale</div>
+            <div class="spacing-demo">
+              <div class="space-row"><code>8</code><div class="space-bar s1"></div></div>
+              <div class="space-row"><code>16</code><div class="space-bar s2"></div></div>
+              <div class="space-row"><code>24</code><div class="space-bar s3"></div></div>
+              <div class="space-row"><code>32</code><div class="space-bar s4"></div></div>
+              <div class="space-row"><code>48</code><div class="space-bar s5"></div></div>
+              <div class="space-row"><code>64</code><div class="space-bar s6"></div></div>
+              <div class="space-row"><code>96</code><div class="space-bar s7"></div></div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="token-label">Layout rules</div>
+            <div class="rule-list">
+              <div class="rule">Max content width: <strong>1180px</strong></div>
+              <div class="rule">Primary page sections: <strong>80–112px vertical padding</strong></div>
+              <div class="rule">Use strong 2-column editorial layouts on desktop; collapse to 1 column on mobile.</div>
+              <div class="rule">Favor square corners and visible borders to reinforce the industrial character.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section dark-surface">
+      <div class="shell">
+        <div class="section-head"><div class="section-kicker">04 / Components</div><h2>Buttons & Surfaces</h2></div>
+        <div class="card" style="margin-bottom:18px;">
+          <div class="token-label">Button styles</div>
+          <div class="button-row">
+            <a class="btn btn-primary" href="#">Primary CTA ↗</a>
+            <a class="btn btn-dark" href="#" style="border-color:rgba(255,255,255,.35);">Dark CTA ↗</a>
+            <a class="btn btn-outline" href="#" style="border-color:rgba(255,255,255,.5); color:var(--paper);">Outline CTA ↗</a>
+          </div>
+        </div>
+        <div class="grid grid-3">
+          <div class="card"><div class="token-label">Surface / Dark</div><h3 class="display-md">Mission Critical</h3><p class="body-md" style="color:rgba(255,255,255,.65); margin-top:12px;">Use dark surfaces for authority, trust and high-priority service sections.</p></div>
+          <div class="card" style="background:var(--amber); color:var(--ink); border-color:transparent;"><div class="token-label" style="color:#6e4b17;">Surface / Callout</div><h3 class="display-md">Early Diagnostics</h3><p class="body-md" style="margin-top:12px;">Amber is reserved for emphasis, statistics, action and warning states.</p></div>
+          <div class="card" style="background:var(--blue); color:var(--ink);"><div class="token-label">Surface / Informational</div><h3 class="display-md">Repair Guidance</h3><p class="body-md" style="margin-top:12px;">Pale blue supports informational and comparison sections without competing with CTAs.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="shell">
+        <div class="section-head"><div class="section-kicker">05 / Navigation</div><h2>Sticky Navigation</h2></div>
+        <div class="nav-demo">
+          <div class="nav-demo__top"><div class="brand">GIE</div><div class="nav-links"><span>Services</span><span>Capabilities</span><span>Repair vs Replace</span><span>Why GIE</span></div><a class="btn btn-outline" href="#">Request a Quote</a></div>
+          <div class="section-nav"><a href="#">Common Causes</a><a href="#">Capabilities</a><a href="#">Volume Programs</a><a href="#">Request Repair</a></div>
+        </div>
+        <div class="rule-list" style="margin-top:24px;">
+          <div class="rule">Global header stays fixed at the top of the viewport.</div>
+          <div class="rule">Section navigation sits directly below it and uses in-page anchors.</div>
+          <div class="rule">Hover state: amber background with navy text.</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="shell">
+        <div class="section-head"><div class="section-kicker">06 / Interaction</div><h2>Hover Behavior</h2></div>
+        <div class="grid grid-3">
+          <div class="card"><div class="token-label">Navigation</div><p class="body-md">Underline or background transition only. Keep movement subtle and fast.</p></div>
+          <div class="card"><div class="token-label">Buttons</div><p class="body-md">Translate upward 2–3px and invert or lighten the background.</p></div>
+          <div class="card"><div class="token-label">Cards / Badges</div><p class="body-md">Use background/color inversion and a slight upward movement. Avoid complex click states for the submission prototype.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="shell">
+        <div class="section-head"><div class="section-kicker">07 / Usage</div><h2>Design Principles</h2></div>
+        <div class="rule-list">
+          <div class="rule"><strong>Industrial, not generic corporate.</strong> Use condensed type, rigid grids, technical labels and hard edges.</div>
+          <div class="rule"><strong>Content first.</strong> Exact client copy must remain intact; visual hierarchy should organize it, not rewrite it.</div>
+          <div class="rule"><strong>High contrast.</strong> Navy establishes authority, amber signals action, pale blue creates information zones.</div>
+          <div class="rule"><strong>Photography should be purposeful.</strong> Prefer real industrial repair, motors, technicians and facilities over decorative stock imagery.</div>
+          <div class="rule"><strong>Prototype restraint.</strong> Hover-only interaction keeps the deliverable focused and review-safe.</div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="shell"><div class="brand">GIE DESIGN SYSTEM</div><p>Standalone reference page for the CenNext / Gainesville Industrial Electric web prototype.</p></div>
+  </footer>
+</body>
+</html>
