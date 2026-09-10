@@ -1,63 +1,58 @@
-import { ArrowRight, ArrowUpRight, Check, Plus } from "lucide-react";
+import { ArrowRight, ArrowUpRight, Check, CircleAlert, Factory, Gauge, ShieldCheck, Wrench } from "lucide-react";
 
-const capabilities = [
-  {
-    number: "01",
-    title: "E-commerce data management",
-    description:
-      "Accurate, scalable product data workflows that keep B2B catalogues moving.",
-    tag: "DATA OPERATIONS",
-  },
-  {
-    number: "02",
-    title: "3D modelling",
-    description:
-      "Technical visualisation and production-ready modelling for complex products.",
-    tag: "TECHNICAL DESIGN",
-  },
-  {
-    number: "03",
-    title: "Other services",
-    description:
-      "Flexible support for the operational details that help your business grow.",
-    tag: "CUSTOM WORKFLOWS",
-  },
+const failureCauses = [
+  "Overheating and bearing wear caused by load conditions, lubrication issues, or improper alignment",
+  "Moisture ingress that leads to contamination or corrosion",
+  "Electrical imbalance or insulation breakdown",
+  "Exposure to corrosive chemicals or dust in manufacturing environments",
+  "Degradation over time and lack of scheduled maintenance",
 ];
 
-const steps = [
-  {
-    number: "01",
-    title: "Understand",
-    text: "We learn the workflow behind the request, not just the request itself.",
-  },
-  {
-    number: "02",
-    title: "Build",
-    text: "We turn repeatable detail into a clear, well-managed operating system.",
-  },
-  {
-    number: "03",
-    title: "Improve",
-    text: "We stay close to the work and keep finding the next useful gain.",
-  },
+const capabilities = [
+  "AC and DC motor repair up to 500 HP",
+  "Skilled technicians trained to follow recognized industry standards (EASA-compliant)",
+  "Rotor core testing, burnout ovens, and balancing",
+  "Factory-authorized warranty repair for leading motor manufacturers",
+  "Industrial motor rewinding",
+];
+
+const programFeatures = [
+  "Pickup and return of motors on a scheduled basis",
+  "Accommodation for industrial campuses or multi-site operations",
+  "Serialized tracking and repair documentation",
+  "Preferred pricing options for customers with long-term service needs",
+];
+
+const warningSigns = [
+  "Noticeable increase in vibration or changes in operating sound",
+  "Higher than normal power consumption during standard operating conditions",
+  "Tripped breakers or activation of thermal protection during startup or runtime",
+  "Irregular speed, reduced torque, or difficulty maintaining load",
+  "Evidence of bearing wear, misalignment, or heat-related discoloration",
+  "Visible damage to wiring, insulation, connectors, or enclosure components",
+];
+
+const comparison = [
+  ["Cost", "~30–60% the cost of new motor (depending on damage & labor)", "Full cost of new motor + possible lead time/shipping charges"],
+  ["Lead Time", "Standard turnaround time is 2 weeks. Rush repair is available.", "Varies by model — can be up to 25 weeks depending on supply chain"],
+  ["Motor Age", "Ideal for motors less than 15–20 years old with available parts", "Best if motor is outdated, inefficient, or parts are obsolete"],
+  ["Energy Efficiency", "Retains original efficiency rating", "Newer models offer improved energy efficiency (IE3, IE4, etc.)"],
+  ["Part Availability", "Repair feasible when OEM parts are still accessible", "Replace when parts are obsolete or discontinued"],
+  ["Warranty Impact", "Covered when serviced at authorized repair center (like GIE)", "New OEM warranties typically range 1–3 years"],
+  ["Downtime Impact", "Less downtime in most cases, especially for common or stocked motors", "Potentially longer downtime if new motor isn’t in stock"],
+  ["Sustainability", "Extends life of existing assets, reduces waste", "May be more energy efficient, but creates disposal/waste considerations"],
 ];
 
 function BrandMark() {
-  return (
-    <span className="brand-mark" aria-label="CenNext home">
-      <span className="brand-mark__dot" aria-hidden="true" />
-      <span className="brand-mark__word">CENNEXT</span>
-    </span>
-  );
+  return <span className="brand-mark"><span className="brand-mark__dot" aria-hidden="true" /><span className="brand-mark__word">GIE</span></span>;
 }
 
 function SectionLabel({ children, light = false }: { children: React.ReactNode; light?: boolean }) {
-  return (
-    <div className={`section-label ${light ? "section-label--light" : ""}`}>
-      <span className="section-label__line" aria-hidden="true" />
-      <span>{children}</span>
-    </div>
-  );
+  return <div className={`section-label ${light ? "section-label--light" : ""}`}><span className="section-label__line" aria-hidden="true" /><span>{children}</span></div>;
+}
+
+function BulletList({ items, className = "" }: { items: string[]; className?: string }) {
+  return <ul className={`bullet-list ${className}`}>{items.map((item) => <li key={item}><Check size={15} aria-hidden="true" /><span>{item}</span></li>)}</ul>;
 }
 
 export default function Home() {
@@ -65,173 +60,51 @@ export default function Home() {
     <div className="site-shell">
       <header className="site-nav">
         <div className="site-nav__inner">
-          <a className="site-nav__brand" href="#top" aria-label="CenNext home">
-            <BrandMark />
-          </a>
+          <a className="site-nav__brand" href="#top" aria-label="Gainesville Industrial Electric home"><BrandMark /></a>
           <nav className="site-nav__links" aria-label="Primary navigation">
-            <a href="#about">About</a>
-            <a href="#services">Services</a>
-            <a href="#method">Our method</a>
-            <a href="#contact">Contact</a>
+            <a href="#services">Services</a><a href="#programs">Programs</a><a href="#compare">Repair vs. Replace</a><a href="#trust">Why GIE</a>
           </nav>
-          <a className="nav-cta" href="#contact">
-            Let&apos;s talk <ArrowUpRight size={15} strokeWidth={2.2} aria-hidden="true" />
-          </a>
+          <a className="nav-cta" href="https://www.gainesvilleindustrial.com/contact/">Request a quote <ArrowUpRight size={15} aria-hidden="true" /></a>
         </div>
       </header>
 
       <main>
         <section className="hero" id="top">
-          <div className="hero__backdrop" aria-hidden="true" />
-          <div className="hero__grid" aria-hidden="true" />
+          <div className="hero__backdrop" aria-hidden="true" /><div className="hero__grid" aria-hidden="true" />
           <div className="container hero__inner">
             <div className="hero__copy">
-              <div className="eyebrow eyebrow--light">BPO FOR THE INDUSTRIAL ECONOMY</div>
-              <h1>
-                Where complex
-                <span>operations</span>
-                become clear.
-              </h1>
-              <p className="hero__lead">
-                CenNext is the reliable operational partner behind the details that keep B2B manufacturing moving.
-              </p>
-              <div className="hero__actions">
-                <a className="btn btn-primary" href="#services">
-                  Explore capabilities <ArrowUpRight size={17} aria-hidden="true" />
-                </a>
-                <a className="text-link text-link--light" href="#contact">
-                  Start a conversation <ArrowRight size={16} aria-hidden="true" />
-                </a>
-              </div>
+              <div className="eyebrow eyebrow--light">INDUSTRIAL ELECTRIC MOTOR REPAIR</div>
+              <h1>Keep critical equipment <span>running.</span></h1>
+              <p className="hero__lead">Gainesville Industrial Electric provides industrial electric motor repair services that help facilities keep equipment running and avoid costly downtime.</p>
+              <div className="hero__actions"><a className="btn btn-primary" href="https://www.gainesvilleindustrial.com/contact/">Contact our repair team <ArrowUpRight size={17} aria-hidden="true" /></a><a className="text-link text-link--light" href="#services">Explore capabilities <ArrowRight size={16} aria-hidden="true" /></a></div>
             </div>
-            <div className="hero__aside">
-              <div className="hero__aside-label">CENNEXT / EST. 2014</div>
-              <div className="hero__aside-rule" aria-hidden="true" />
-              <p>Structured support for the work your customers never see.</p>
-            </div>
+            <div className="hero__aside"><div className="hero__aside-label">GIE / SERVING INDUSTRY FOR 60+ YEARS</div><div className="hero__aside-rule" aria-hidden="true" /><p>Fast turnaround, factory-authorized repairs, and AC and DC motor expertise supported by a skilled in-house team.</p></div>
           </div>
-          <div className="container hero__footer">
-            <div className="hero__scroll-note">
-              <span className="hero__scroll-dot" aria-hidden="true" />
-              <span>Scroll to explore</span>
-            </div>
-            <div className="hero__location">HANOI · VIETNAM</div>
-          </div>
+          <div className="container hero__footer"><div className="hero__scroll-note"><span className="hero__scroll-dot" aria-hidden="true" /><span>Explore our services</span></div><div className="hero__location">GAINESVILLE · FLORIDA</div></div>
         </section>
 
-        <section className="signal-band" aria-label="Company highlights">
-          <div className="container signal-band__inner">
-            <div className="signal-band__intro">A calmer way to scale the back office</div>
-            <div className="signal-band__stats">
-              <div className="stat"><strong>10<span>+</span></strong><small>Years of growth</small></div>
-              <div className="stat"><strong>03</strong><small>Offices</small></div>
-              <div className="stat"><strong>18<span>+</span></strong><small>People in motion</small></div>
-              <div className="stat"><strong>08<span>+</span></strong><small>Success projects</small></div>
-            </div>
-          </div>
-        </section>
+        <section className="signal-band" aria-label="Service highlights"><div className="container signal-band__inner"><div className="signal-band__intro">Reliable service for critical assets</div><div className="signal-band__stats"><div className="stat"><strong>60<span>+</span></strong><small>Years of service</small></div><div className="stat"><strong>500</strong><small>HP repair capacity</small></div><div className="stat"><strong>AC/DC</strong><small>Motor expertise</small></div><div className="stat"><strong>24/7</strong><small>Emergency service</small></div></div></div></section>
 
-        <section className="about-section section-pad" id="about">
-          <div className="container about-section__grid">
-            <div className="section-index">01 <span>/</span> 04</div>
-            <div className="about-section__copy">
-              <SectionLabel>ABOUT CENNEXT</SectionLabel>
-              <h2>Good operations create room for <em>better</em> decisions.</h2>
-            </div>
-            <div className="about-section__detail">
-              <p className="lead-copy">We provide professional BPO services for a leading B2B platform connecting buyers and suppliers across manufacturing and industry.</p>
-              <p className="body-copy">From data-rich catalogues to technical modelling, our teams bring focus, consistency and care to the work that sits between a great product and the people looking for it.</p>
-              <a className="text-link" href="#method">How we work <ArrowRight size={16} aria-hidden="true" /></a>
-            </div>
-          </div>
-        </section>
+        <section className="about-section section-pad" id="causes"><div className="container about-section__grid"><div className="section-index">01 <span>/</span> 07</div><div className="about-section__copy"><SectionLabel>COMMON CAUSES OF MOTOR FAILURE</SectionLabel><h2>Small issues can become <em>big</em> shutdowns.</h2></div><div className="about-section__detail"><p className="lead-copy">Industrial motors operate in harsh environments, and many failures start as minor issues that go unnoticed.</p><p className="body-copy">Problems that are not addressed early can lead to unexpected shutdowns, safety risks, and major repair costs. Some of the most common contributors to failure include:</p><BulletList items={failureCauses} /></div></div></section>
 
-        <section className="services-section section-pad" id="services">
-          <div className="container">
-            <div className="services-section__head">
-              <div>
-                <SectionLabel>OUR SERVICES</SectionLabel>
-                <h2>Precision where it matters.</h2>
-              </div>
-              <p>Three ways we help ambitious industrial businesses make complexity feel manageable.</p>
-            </div>
-            <div className="capability-list">
-              {capabilities.map((capability) => (
-                <a className="capability-card" href="#contact" key={capability.number}>
-                  <div className="capability-card__top">
-                    <span className="capability-card__number">{capability.number}</span>
-                    <span className="capability-card__tag">{capability.tag}</span>
-                  </div>
-                  <div className="capability-card__main">
-                    <div>
-                      <h3>{capability.title}</h3>
-                      <p>{capability.description}</p>
-                    </div>
-                    <span className="capability-card__arrow" aria-hidden="true"><ArrowUpRight size={22} /></span>
-                  </div>
-                </a>
-              ))}
-            </div>
-          </div>
-        </section>
+        <section className="callout-section"><div className="container callout-section__inner"><div className="callout-section__icon"><Gauge size={28} aria-hidden="true" /></div><div><span className="callout-section__label">EARLY DIAGNOSTICS</span><h2>80% of electric motor failures are preventable with early diagnostics</h2></div></div></section>
 
-        <section className="method-section section-pad" id="method">
-          <div className="container method-section__grid">
-            <div className="method-section__intro">
-              <SectionLabel light>OUR METHOD</SectionLabel>
-              <h2>Make the details work harder.</h2>
-              <p>Clear thinking, careful execution and an operating rhythm built around your goals.</p>
-              <div className="method-section__seal"><span>CN</span><small>OPERATIONS<br />WITH INTENT</small></div>
-            </div>
-            <div className="method-steps">
-              {steps.map((step) => (
-                <div className="method-step" key={step.number}>
-                  <div className="method-step__number">{step.number}</div>
-                  <div>
-                    <h3>{step.title}</h3>
-                    <p>{step.text}</p>
-                  </div>
-                  <Plus className="method-step__plus" size={19} strokeWidth={1.5} aria-hidden="true" />
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
+        <section className="services-section section-pad" id="services"><div className="container"><div className="services-section__head"><div><SectionLabel>OUR REPAIR CAPABILITIES</SectionLabel><h2>AC, DC, rewinding <em>& more.</em></h2></div><p>Gainesville Industrial Electric provides complete electric motor repair services, with capabilities including:</p></div><div className="capability-list">{capabilities.map((item, index) => <a className="capability-card" href="https://www.gainesvilleindustrial.com/contact/" key={item}><div className="capability-card__top"><span className="capability-card__number">0{index + 1}</span><span className="capability-card__tag">REPAIR CAPABILITY</span></div><div className="capability-card__main"><h3>{item}</h3><span className="capability-card__arrow" aria-hidden="true"><ArrowUpRight size={22} /></span></div></a>)}</div></div></section>
 
-        <section className="proof-section section-pad">
-          <div className="container proof-section__inner">
-            <div className="proof-section__mark" aria-hidden="true">“</div>
-            <blockquote>Built for the details your customers never see — and the results they always do.</blockquote>
-            <div className="proof-section__footer"><span>THE CENNEXT PROMISE</span><span className="proof-section__line" aria-hidden="true" /><span>01 / 01</span></div>
-          </div>
-        </section>
+        <section className="program-section section-pad" id="programs"><div className="container program-section__grid"><div className="program-section__intro"><SectionLabel light>VOLUME REPAIR PROGRAMS</SectionLabel><h2>Support for every motor in your <em>plant.</em></h2><p>Gainesville Industrial Electric provides structured repair programs for facilities requiring service for multiple motors on a recurring basis.</p><a className="btn btn-primary" href="https://www.gainesvilleindustrial.com/contact/">Ask about plant support <ArrowUpRight size={17} aria-hidden="true" /></a></div><div className="program-section__detail"><div className="program-section__eyebrow">AVAILABLE PROGRAM FEATURES</div><BulletList items={programFeatures} className="bullet-list--light" /><div className="program-callout"><Wrench size={20} aria-hidden="true" /><span>Ask us about high-volume support for your plant or fleet.</span></div></div></div></section>
 
-        <section className="contact-section" id="contact">
-          <div className="container contact-section__inner">
-            <div className="contact-section__copy">
-              <SectionLabel>START A CONVERSATION</SectionLabel>
-              <h2>Let&apos;s make your next workflow <em>lighter.</em></h2>
-              <a className="btn btn-dark" href="mailto:hr.recruitment@cennext.com">Get in touch <ArrowUpRight size={17} aria-hidden="true" /></a>
-            </div>
-            <div className="contact-section__details">
-              <div className="contact-detail"><span>VISIT US</span><p>Building D, No. 22 Thanh Cong Street,<br />Giang Vo Ward, Hanoi</p></div>
-              <div className="contact-detail"><span>EMAIL</span><a href="mailto:hr.recruitment@cennext.com">hr.recruitment@cennext.com</a></div>
-              <div className="contact-detail"><span>FOLLOW</span><p>LinkedIn&nbsp;&nbsp; / &nbsp;&nbsp;Facebook&nbsp;&nbsp; / &nbsp;&nbsp;TikTok</p></div>
-            </div>
-          </div>
-        </section>
+        <section className="warning-section section-pad" id="warning"><div className="container warning-section__grid"><div><SectionLabel>SIGNS YOU NEED PROFESSIONAL MOTOR REPAIR</SectionLabel><h2>Listen closely. Your motor may be telling you <em>something.</em></h2></div><div className="warning-section__detail"><p className="lead-copy">Electric motors can show measurable indications of wear or developing faults. Identifying changes in performance early can help determine whether corrective maintenance or repairs are needed.</p><BulletList items={warningSigns} /><p className="body-copy">If any of these conditions are present, inspection and diagnostic testing can help determine the source of the issue, assess the extent of damage, and identify whether repairs or replacement are appropriate.</p></div></div></section>
+
+        <section className="compare-section section-pad" id="compare"><div className="container"><div className="compare-section__head"><div><SectionLabel>REPAIR VS. REPLACE</SectionLabel><h2>What&apos;s right for <em>you?</em></h2></div><p>Evaluating whether to repair or replace an electric motor depends on factors such as cost, availability of parts, operating requirements, and required turnaround time.</p></div><div className="compare-section__copy"><p>Repair costs can vary based on condition, but are often 30% to 60% of the cost of a new motor. Repair work may include reconditioning, bearing replacement, or full rewind services when appropriate. Replacement may be selected when equipment is obsolete, damaged beyond practical repair, or when parts cannot be sourced within an acceptable timeframe.</p><p>For motors rated at 100 horsepower and below, replacement is often more economical than performing a full rewind. Rewinding in this range is generally limited to motors that are specialized or custom, or when replacement motors have extended lead times. Reconditioning and bearing replacement are common options for motors under 100 horsepower when major components remain structurally sound.</p><p>When evaluating options, it can be useful to consider energy efficiency, expected service life, and availability of compatible parts. New motors may provide updated efficiency ratings and features, while repair maintains existing specifications. Lead times for replacement motors vary based on model availability and supply conditions, which may influence scheduling decisions.</p><p>Gainesville Industrial Electric provides information on cost, lead time, and feasibility to help customers evaluate the available options.</p></div><div className="comparison-table-wrap"><table className="comparison-table"><thead><tr><th>Factor</th><th>Repair</th><th>Replace</th></tr></thead><tbody>{comparison.map(([factor, repair, replace]) => <tr key={factor}><th scope="row">{factor}</th><td>{repair}</td><td>{replace}</td></tr>)}</tbody></table></div></div></section>
+
+        <section className="trust-section section-pad" id="trust"><div className="container trust-section__grid"><div className="trust-section__intro"><SectionLabel light>WHY END USERS TRUST GIE</SectionLabel><h2>Experience that keeps your operation <em>moving.</em></h2></div><div className="trust-section__detail"><p className="lead-copy">Gainesville Industrial Electric has provided electric motor repair services for more than 60 years. We are a factory-authorized warranty repair center for leading brands and maintain an extensive inventory of OEM replacement parts.</p><p className="body-copy">All repair work is performed by our highly trained in-house team with fast turnaround times. We also provide local support and emergency service to keep your motors running in peak condition when you need them most.</p><div className="trust-badges"><div><Factory size={22} aria-hidden="true" /><span>Factory<br />Authorized</span></div><div><ShieldCheck size={22} aria-hidden="true" /><span>OEM<br />Parts</span></div><div><Check size={22} aria-hidden="true" /><span>EASA<br />Compliant</span></div><div><CircleAlert size={22} aria-hidden="true" /><span>24/7<br />Support</span></div></div></div></div></section>
+
+        <section className="contact-section" id="contact"><div className="container contact-section__inner"><div className="contact-section__copy"><SectionLabel>REQUEST A REPAIR OR QUOTE</SectionLabel><h2>Keep your next shutdown <em>short.</em></h2><p className="contact-section__lead">Gainesville Industrial Electric performs repair services for industrial AC and DC motors, including reconditioning, bearing replacement, rewinding, and structured programs for facilities with multiple motors. We also support equipment that is older or difficult to replace and can accommodate a range of service needs, from individual repairs to ongoing maintenance programs.</p><a className="btn btn-dark" href="https://www.gainesvilleindustrial.com/contact/">Contact our repair team <ArrowUpRight size={17} aria-hidden="true" /></a></div><div className="contact-section__details"><div className="contact-detail"><span>CONTACT</span><p>For more information about our industrial electric motor repair capabilities, contact us or request a quote today.</p></div><div className="contact-detail"><span>REQUEST A QUOTE</span><a href="https://www.gainesvilleindustrial.com/contact/">gainesvilleindustrial.com/contact</a></div><div className="contact-detail"><span>COMPANY</span><p>Gainesville Industrial Electric</p></div></div></div></section>
       </main>
 
-      <footer className="site-footer">
-        <div className="container site-footer__inner">
-          <div><BrandMark /><p>Where you find smart.</p></div>
-          <div className="site-footer__meta"><span>© 2026 CenNext</span><span className="prototype-note"><Check size={13} aria-hidden="true" /> Prototype · Content Test pending</span></div>
-          <a className="footer-top" href="#top" aria-label="Back to top">Back to top <ArrowUpRight size={14} aria-hidden="true" /></a>
-        </div>
-      </footer>
+      <footer className="site-footer"><div className="container site-footer__inner"><div><BrandMark /><p>Industrial motor repair you can rely on.</p></div><div className="site-footer__meta"><span>Gainesville Industrial Electric</span><span className="prototype-note"><Check size={13} aria-hidden="true" /> Content Test integrated</span></div><a className="footer-top" href="#top" aria-label="Back to top">Back to top <ArrowUpRight size={14} aria-hidden="true" /></a></div></footer>
     </div>
   );
 }
 
 export { BrandMark, SectionLabel };
-
