@@ -1,3 +1,4 @@
+@import url("./motion-system.css?v=20260915-1");
 /* Brief-compliance layer: exact one-page content, sticky section nav, hover-only visual states. */
 body { background: var(--paper); }
 .site-nav { position: sticky; top: 0; z-index: 60; }
