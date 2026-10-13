@@ -133,3 +133,85 @@
     if (navCta) navCta.href = "contact.html";
   }
 })();
+
+// Concept journey uses the existing script owner; old page selectors stay unchanged.
+(() => {
+  if (!document.body.classList.contains('concept-site')) return;
+  document.body.classList.add('is-enhanced');
+  const toggle = document.querySelector('.c-menu-toggle');
+  const nav = document.querySelector('.c-nav');
+  function setMenu(open, returnFocus = false) {
+    nav.classList.toggle('is-open', open);
+    toggle.setAttribute('aria-expanded', String(open));
+    if (returnFocus) toggle.focus();
+  }
+  toggle.addEventListener('click', () => setMenu(toggle.getAttribute('aria-expanded') !== 'true'));
+  nav.addEventListener('click', event => { if (event.target.closest('a')) setMenu(false); });
+  document.addEventListener('keydown', event => { if (event.key === 'Escape' && nav.classList.contains('is-open')) setMenu(false, true); });
+  const desktop = matchMedia('(min-width:900px)');
+  desktop.addEventListener('change', () => setMenu(false));
+  const serviceData = {
+    automation: {title:'Automation & control', description:'Clarify control requirements, equipment interfaces and test expectations before a project starts.', inputs:['Equipment and process overview','Existing control system, if known','Production and access constraints'], outputs:['Control scope and system boundaries','Interface and responsibility checklist','Test criteria and handover outline']},
+    integration: {title:'System integration', description:'Make the interfaces between equipment, systems and project partners explicit.', inputs:['Systems that need to exchange information','Available interface documentation','Dependencies and responsibility boundaries'], outputs:['Interface and ownership map','Integration requirements and dependencies','Coordination and handover checklist']},
+    modernization: {title:'Modernization', description:'Plan the next change around the equipment and constraints already in place.', inputs:['Current equipment and documentation','Known reliability or maintainability concerns','Access windows and production constraints'], outputs:['Current-system assessment outline','Staged migration and dependency roadmap','Verification and documentation plan']}
+  };
+  const requested = new URLSearchParams(location.search).get('service');
+  const validService = Object.hasOwn(serviceData, requested) ? requested : null;
+  const serviceTitle = document.getElementById('service-title');
+  if (serviceTitle) {
+    const chosen = validService || 'automation'; const data = serviceData[chosen];
+    serviceTitle.textContent = data.title;
+    document.getElementById('service-description').textContent = data.description;
+    for (const key of ['inputs','outputs']) {
+      document.getElementById('service-'+key).replaceChildren(...data[key].map(text => { const li = document.createElement('li'); li.textContent = text; return li; }));
+    }
+    document.querySelector('[data-service="'+chosen+'"]').setAttribute('aria-current','true');
+    document.getElementById('service-cta').href = 'contact.html?service='+chosen;
+  }
+  const form = document.getElementById('brief-form');
+  if (!form) return;
+  document.getElementById('details-fields').disabled = false;
+  const service = document.getElementById('service');
+  service.value = validService || 'unsure';
+  const summary = document.getElementById('error-summary');
+  const review = document.getElementById('review-panel');
+  const success = document.getElementById('success-panel');
+  function showStage(stage) {
+    form.hidden = stage !== 'details'; review.hidden = stage !== 'review'; success.hidden = stage !== 'success';
+    summary.hidden = true;
+    document.getElementById('progress-details').toggleAttribute('aria-current', stage === 'details');
+    document.getElementById('progress-review').toggleAttribute('aria-current', stage !== 'details');
+    document.querySelector('.c-progress [aria-current]').setAttribute('aria-current','step');
+    const target = stage === 'details' ? service : document.getElementById(stage === 'review' ? 'review-title' : 'success-title');
+    target.focus();
+  }
+  function data() {
+    return { 'Project type':serviceData[service.value]?.title || 'Not sure yet', 'What needs to change':document.getElementById('scope').value.trim(), Company:document.getElementById('company').value.trim() || 'Not provided', 'Work email':document.getElementById('email').value.trim(), 'Timing or constraints':document.getElementById('timing').value.trim() || 'Not provided' };
+  }
+  form.addEventListener('submit', event => {
+    event.preventDefault(); const errors = [];
+    for (const id of ['scope','email']) {
+      const input = document.getElementById(id); let message = '';
+      if (id === 'scope' && input.value.trim().length < 10) message = 'Describe the change in at least 10 characters.';
+      if (id === 'email' && (!input.value.trim() || !input.validity.valid)) message = 'Enter a valid email address.';
+      input.setAttribute('aria-invalid', String(Boolean(message)));
+      const error = document.getElementById(id+'-error'); error.hidden = !message; error.textContent = message;
+      if (message) errors.push({id,message});
+    }
+    if (errors.length) {
+      document.getElementById('error-links').replaceChildren(...errors.map(({id,message}) => { const li=document.createElement('li'); const a=document.createElement('a'); a.href='#'+id; a.textContent=message; a.addEventListener('click', event=>{event.preventDefault();document.getElementById(id).focus();});li.append(a);return li; }));
+      summary.hidden=false; summary.focus(); return;
+    }
+    const rows=[];
+    for (const [key,value] of Object.entries(data())) { const dt=document.createElement('dt');dt.textContent=key; const dd=document.createElement('dd');dd.textContent=value;rows.push(dt,dd); }
+    document.getElementById('review-values').replaceChildren(...rows);showStage('review');
+  });
+  document.getElementById('edit-brief').addEventListener('click',()=>showStage('details'));
+  document.getElementById('revise-brief').addEventListener('click',()=>showStage('details'));
+  document.getElementById('prepare-brief').addEventListener('click',()=>showStage('success'));
+  document.getElementById('download-brief').addEventListener('click',()=>{
+    const text='G.I.E CONCEPT - LOCAL PROJECT BRIEF\nNo request was sent.\n\n'+Object.entries(data()).map(([key,value])=>key+':\n'+value).join('\n\n');
+    const url=URL.createObjectURL(new Blob([text],{type:'text/plain;charset=utf-8'}));
+    const link=document.createElement('a');link.href=url;link.download='gie-project-brief.txt';document.body.append(link);link.click();link.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);
+  });
+})();
