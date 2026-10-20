@@ -1,0 +1,103 @@
+name: A13 CENNEXT Factory Dogfood
+
+on:
+  push:
+    branches:
+      - a13-cennext-dogfood
+      - main
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  factory-dogfood:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout CENNEXT target
+        uses: actions/checkout@v6
+
+      - name: Checkout pinned UIUX Factory
+        uses: actions/checkout@v6
+        with:
+          repository: Ngh1aa/uiux-ai-workspace
+          ref: a9b74f354c485f8b61635755704342205083bb13
+          path: .factory
+
+      - name: Set up Python
+        uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: "22"
+
+      - name: Install Factory runtime dependencies
+        run: python -m pip install "pydantic>=2.5.3,<3" "python-dotenv>=1,<2"
+
+      - name: Dogfood canonical Flow OS on CENNEXT
+        run: |
+          mkdir -p .factory/uiux-factory/qa/artifacts
+          python .factory/skills_UIUX/scripts/uiux-agent.py \
+            --project "$GITHUB_WORKSPACE" \
+            --task "Redesign and validate the CENNEXT B2B industrial motor repair service website across enterprise information architecture, lead-generation journeys, responsive UI and interactive prototype quality" \
+            --managed \
+            --authority read_only \
+            --intent redesign \
+            --change-surface PRODUCT \
+            --validation-lane evidence-led \
+            --mode interactive-prototype \
+            > .factory/uiux-factory/qa/artifacts/a13-cennext-managed-plan.json
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          path = Path('.factory/uiux-factory/qa/artifacts/a13-cennext-managed-plan.json')
+          data = json.loads(path.read_text(encoding='utf-8'))
+          assert data.get('manager_run_id'), 'Factory did not create a managed run'
+          assert data.get('active_stage'), 'Factory did not resolve an active stage'
+          flow = data.get('flow') or {}
+          assert flow.get('id'), 'Factory did not resolve a Flow'
+          assert flow.get('stages'), 'Factory resolved an empty Flow'
+          assert any(stage.get('skills') for stage in flow['stages']), 'Factory routed no skills to CENNEXT'
+          print(f"CENNEXT A13 plan: flow={flow['id']} active_stage={data['active_stage']} stages={len(flow['stages'])}")
+          PY
+
+      - name: Install Factory QA dependencies
+        working-directory: .factory/uiux-factory/qa
+        run: npm install --no-audit --no-fund
+
+      - name: Install Chromium
+        working-directory: .factory/uiux-factory/qa
+        run: npx playwright install --with-deps chromium
+
+      - name: Serve and audit CENNEXT rendered pages
+        working-directory: .factory/uiux-factory/qa
+        env:
+          QA_TARGET_DIR: ${{ github.workspace }}
+          QA_BASE_URL: http://127.0.0.1:4173
+          QA_ROUTES: /,/services.html,/programs.html,/why-gie.html,/repair-vs-replace.html,/contact.html,/prototype.html,/design-system.html,/component-states.html,/sitemap.html,/user-flow.html
+        run: |
+          node scripts/serve-target.mjs > /tmp/cennext-a13-server.log 2>&1 &
+          SERVER_PID=$!
+          trap 'kill $SERVER_PID 2>/dev/null || true' EXIT
+          node scripts/wait-ready.mjs
+          npm test
+
+      - name: Print target server log on failure
+        if: failure()
+        run: cat /tmp/cennext-a13-server.log || true
+
+      - name: Upload CENNEXT Factory evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: cennext-a13-factory-evidence
+          path: .factory/uiux-factory/qa/artifacts/
+          if-no-files-found: warn
+          retention-days: 7
