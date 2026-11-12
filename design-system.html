@@ -11,7 +11,7 @@
   <link rel="stylesheet" href="case-study.css">
 </head>
 <body class="case-page">
-  <header class="case-nav">
+  <header class="case-nav" id="top">
     <div class="case-nav__inner">
       <a class="case-brand" href="index.html" aria-label="GIE prototype home">
         <span class="case-brand__rotor" aria-hidden="true"><i></i><i></i><i></i><i></i></span><span class="case-brand__word">GIE</span>
@@ -98,7 +98,7 @@
       <div class="case-shell">
         <div class="case-section__head"><div class="case-kicker">06 / Buttons</div><div><h2>Action is unmistakable.</h2><p class="case-section__intro">Buttons are rectangular, compact and high contrast. Amber means primary action, navy means authoritative action, and outline styles support lower-priority paths.</p></div></div>
         <div class="doc-card"><div class="component-cluster">
-          <button class="demo-btn demo-btn--primary">Request a quote <span>↗</span></button><button class="demo-btn demo-btn--dark" style="border-color:rgba(255,255,255,.3)">Contact repair team <span>↗</span></button><button class="demo-btn demo-btn--outline" style="border-color:rgba(255,255,255,.48);color:var(--paper)">View capability</button><a href="#" style="border-bottom:1px solid currentColor;padding-bottom:5px;font-weight:800">Technical text link →</a>
+          <a class="demo-btn demo-btn--primary" href="rfq.html">Request a quote <span>↗</span></a><a class="demo-btn demo-btn--dark" style="border-color:rgba(255,255,255,.3)" href="contact.html">Contact repair team <span>↗</span></a><a class="demo-btn demo-btn--outline" style="border-color:rgba(255,255,255,.48);color:var(--paper)" href="services.html">View capability</a><a href="services.html" style="border-bottom:1px solid currentColor;padding-bottom:5px;font-weight:800">Technical text link →</a>
         </div></div>
       </div>
     </section>
@@ -144,8 +144,8 @@
     <section class="case-section" id="header-footer">
       <div class="case-shell">
         <div class="case-section__head"><div class="case-kicker">10 / Header + Footer</div><div><h2>Navigation keeps the service path visible.</h2><p class="case-section__intro">The live site uses a sticky 76px header, compact technical navigation and a persistent quote CTA. Footer content is intentionally low-noise and returns users to core routes.</p></div></div>
-        <div class="header-demo"><div class="header-demo__bar"><span class="case-brand"><span class="case-brand__rotor"><i></i><i></i><i></i><i></i></span><span class="case-brand__word">GIE</span></span><div class="header-demo__links"><span>Services</span><span>Programs</span><span>Repair vs. Replace</span><span>Why GIE</span></div><button class="demo-btn demo-btn--outline">Request a quote ↗</button></div><div style="padding:22px;color:var(--muted)">Sticky desktop header · mobile navigation collapses at 720px.</div></div>
-        <div class="footer-demo" style="margin-top:16px"><span class="case-brand"><span class="case-brand__rotor"><i></i><i></i><i></i><i></i></span><span class="case-brand__word">GIE</span></span><small>Gainesville Industrial Electric<br>Industrial motor repair prototype</small><a href="#">Back to top ↗</a></div>
+        <div class="header-demo"><div class="header-demo__bar"><span class="case-brand"><span class="case-brand__rotor"><i></i><i></i><i></i><i></i></span><span class="case-brand__word">GIE</span></span><div class="header-demo__links"><span>Services</span><span>Programs</span><span>Repair vs. Replace</span><span>Why GIE</span></div><a class="demo-btn demo-btn--outline" href="rfq.html">Request a quote ↗</a></div><div style="padding:22px;color:var(--muted)">Sticky desktop header · mobile navigation collapses at 720px.</div></div>
+        <div class="footer-demo" style="margin-top:16px"><span class="case-brand"><span class="case-brand__rotor"><i></i><i></i><i></i><i></i></span><span class="case-brand__word">GIE</span></span><small>Gainesville Industrial Electric<br>Industrial motor repair prototype</small><a href="#top">Back to top ↗</a></div>
       </div>
     </section>
 
@@ -156,7 +156,7 @@
           <div class="geometry-demo"><div class="token-name">Radius / 0</div><div class="radius-box"></div><code>border-radius: 0</code></div>
           <div class="geometry-demo"><div class="token-name">Border / Default</div><div class="border-sample soft"></div><code>rgba(9,27,42,.16)</code></div>
           <div class="geometry-demo"><div class="token-name">Border / Strong</div><div class="border-sample"></div><code>1px solid #091B2A</code></div>
-          <div class="geometry-demo"><div class="token-name">Focus ring</div><button class="demo-btn demo-btn--outline state-focus">Focused</button><code>2px amber / 4px offset</code></div>
+          <div class="geometry-demo"><div class="token-name">Focus ring</div><a class="demo-btn demo-btn--outline state-focus" href="services.html">Focused</a><code>2px amber / 4px offset</code></div>
         </div>
       </div>
     </section>
