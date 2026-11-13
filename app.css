@@ -71,16 +71,19 @@ a.c-text-button{display:inline-flex;align-items:center}
 .inner-page .ui-dialog h2{font-size:32px}
 
 /* Demo controls in the footer */
-.ui-demo{display:flex;flex-wrap:wrap;gap:12px 24px;align-items:center;border-top:1px solid var(--c-line,rgba(255,255,255,.2));margin-top:24px;padding-top:20px;font-size:13px}
-.ui-demo p{font-size:13px;flex:1 1 320px}
+/* Demo tools: only rendered with ?demo=1 */
+.ui-demo-tools{position:fixed;right:16px;bottom:16px;z-index:190;max-width:calc(100% - 32px);background:#182823;color:#f6f2e9;border-radius:3px;box-shadow:0 8px 24px rgba(0,0,0,.2);font:500 13px/1.4 system-ui,-apple-system,"Segoe UI",sans-serif}
+.ui-demo-tools summary{cursor:pointer;padding:10px 14px;min-height:44px;display:flex;align-items:center;list-style:none;letter-spacing:.02em}
+.ui-demo-tools summary::-webkit-details-marker{display:none}
+.ui-demo-tools summary::before{content:"\25B8";margin-right:8px;font-size:11px}
+.ui-demo-tools[open] summary::before{content:"\25BE"}
+.ui-demo-tools summary:focus-visible{outline:2px solid #f4ad3e;outline-offset:2px}
+.ui-demo-tools__body{display:grid;gap:4px;padding:0 14px 12px}
+.ui-demo-tools .ui-check input{accent-color:#f4ad3e}
+.ui-demo__reset{min-height:44px;padding:8px 16px;border:1px solid currentColor;border-radius:3px;background:transparent;color:inherit;font:inherit;font-weight:600;cursor:pointer}
+.ui-demo__reset:hover{background:rgba(255,255,255,.1)}
 .ui-check{display:inline-flex;gap:10px;align-items:center;min-height:44px;cursor:pointer}
 .ui-check input{width:20px!important;height:20px;min-height:0!important;margin:0;accent-color:#a63b18}
-.ui-demo__reset{min-height:44px;padding:8px 16px;border:1px solid currentColor;border-radius:3px;background:transparent;color:inherit;font-weight:600;cursor:pointer}
-.ui-demo__reset:hover{background:rgba(0,0,0,.06)}
-.site-footer .ui-demo{color:#f6f2e9;border-top-color:rgba(246,242,233,.22);margin-top:0;padding-block:20px 28px}
-.site-footer .ui-demo p{color:rgba(246,242,233,.82);font-family:var(--font-body);font-size:13px;text-transform:none;margin:0}
-.site-footer .ui-demo__reset:hover{background:rgba(255,255,255,.1)}
-.site-footer .ui-check input{accent-color:#f4ad3e}
 
 /* Service detail */
 .c-detail-intro{border-top:0;padding-top:28px}

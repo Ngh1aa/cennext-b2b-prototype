@@ -1,11 +1,11 @@
 /*
- * G.I.E concept prototype: the single seed data file.
+ * G.I.E site: the single seed data file.
  * Every list and detail page reads from this object. User changes are kept in
  * sessionStorage (see app.js), seeded from here, and restored by "Reset demo data".
- * Capabilities are proposed for a concept; no client work is claimed.
+ * Service and program copy only; no client projects are described.
  */
 window.GIE_SEED = {
-  version: 3,
+  version: 4,
   services: [
     {
       id: 'automation',
@@ -178,12 +178,12 @@ window.GIE_SEED = {
       equipment: { type: 'PLC or control panel', makeModel: 'Legacy PLC, model to confirm', quantity: 2, site: 'Packing hall, Line 3', description: 'Replace two unsupported PLC panels on the packing line in stages.', constraints: 'Weekend shutdowns only.' },
       schedule: { urgency: 'planned', startDate: '2027-02-01', budget: '$50,000 to $250,000', notes: '' },
       attachments: [{ name: 'line3-panel-photos.zip', size: 4812000 }, { name: 'io-list.xlsx', size: 38400 }],
-      contact: { name: 'Example contact', company: 'Example Plant Co.', email: 'maintenance@example.com', phone: '', method: 'Email' },
+      contact: { name: 'Dana Whitfield', company: 'Harlow Creek Packaging', email: 'd.whitfield@harlowcreekpack.com', phone: '+1 678 555 0142', method: 'Email' },
       assessment: null,
       history: [
         { status: 'draft', at: '2026-11-03T09:12:00', note: 'Draft started.' },
-        { status: 'submitted', at: '2026-11-03T09:40:00', note: 'Submitted in this prototype. Nothing was sent.' },
-        { status: 'in-review', at: '2026-11-04T14:30:00', note: 'Simulated review step for the example.' }
+        { status: 'submitted', at: '2026-11-03T09:40:00', note: 'Brief submitted.' },
+        { status: 'in-review', at: '2026-11-04T14:30:00', note: 'Scope review started.' }
       ]
     },
     {

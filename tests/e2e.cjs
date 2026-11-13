@@ -1,5 +1,7 @@
 /*
- * End-to-end test for the G.I.E concept prototype.
+ * End-to-end test for the G.I.E site.
+ * Demo tools (reset, fail the next request) only render with ?demo=1; the
+ * first checks run without it, then the tab switches demo mode on.
  * Run: py -3 -m http.server 8906 --bind 127.0.0.1   (repo root)
  *      NODE_PATH=<dir with playwright> node tests/e2e.cjs
  * Exits 1 on any failed check.
@@ -13,6 +15,9 @@ const PAGES = ['index.html', 'services.html', 'service.html?id=automation', 'ser
   'repair-vs-replace.html', 'why-gie.html', 'contact.html', 'rfq.html', 'requests.html', 'request.html?id=RFQ-1001',
   'request.html?id=RFQ-1002', 'request.html?id=missing', 'design-system.html', 'component-states.html', 'sitemap.html',
   'user-flow.html', 'prototype.html'];
+const PRODUCT_PAGES = ['index.html', 'services.html', 'service.html?id=automation', 'programs.html', 'program.html?id=volume-repair',
+  'repair-vs-replace.html', 'why-gie.html', 'contact.html', 'rfq.html', 'requests.html', 'request.html?id=RFQ-1001', 'request.html?id=RFQ-1002'];
+const PROTOTYPE_WORDS = /prototype|demo data|sandbox|simulat|fictional|state lab|portfolio review|example data|browser tab/i;
 
 const results = [];
 async function check(name, fn) {
@@ -29,6 +34,38 @@ async function check(name, fn) {
   page.on('pageerror', (e) => consoleErrors.push(`${page.url()}: ${e.message}`));
   const go = (path) => page.goto(BASE + path, { waitUntil: 'load' });
   const text = (selector) => page.locator(selector).first().innerText();
+  const openDemo = async () => {
+    await page.waitForSelector('.ui-demo-tools');
+    if (!(await page.locator('.ui-demo-tools[open]').count())) await page.click('.ui-demo-tools summary');
+  };
+
+  await check('product pages show no prototype wording and no demo tools without ?demo', async () => {
+    for (const path of PRODUCT_PAGES) {
+      await go(path);
+      await page.waitForLoadState('networkidle');
+      const body = await page.locator('body').innerText();
+      const match = body.match(PROTOTYPE_WORDS) || (await page.title()).match(PROTOTYPE_WORDS);
+      assert.equal(match, null, `${path} shows "${match && match[0]}"`);
+      assert.equal(await page.locator('.ui-demo-tools').count(), 0, `${path} shows demo tools`);
+      assert.equal(await page.locator('a[href*="design-system"], a[href*="component-states"], a[href*="sitemap"], a[href*="user-flow"], a[href*="prototype.html"]').count(), 0, `${path} links to documentation`);
+      assert.equal(await page.locator('footer').getByText('Unofficial redesign concept by Đỗ Anh Nghĩa').count(), 1, `${path} footer line`);
+    }
+  });
+
+  await check('?demo=1 shows the demo tools for the tab and ?demo=0 hides them', async () => {
+    await go('index.html?demo=1');
+    await page.waitForSelector('.ui-demo-tools summary');
+    assert.equal(await page.locator('.ui-demo-tools summary').isVisible(), true);
+    await go('requests.html');
+    await openDemo();
+    assert.equal(await page.locator('#demo-reset').isVisible(), true);
+    assert.equal(await page.locator('#demo-fail').isVisible(), true);
+    await go('index.html?demo=0');
+    await page.waitForLoadState('networkidle');
+    assert.equal(await page.locator('.ui-demo-tools').count(), 0);
+    await go('index.html?demo=1');
+    await page.waitForSelector('.ui-demo-tools');
+  });
 
   await check('every page loads without console errors and has no href="#"', async () => {
     for (const path of PAGES) {
@@ -42,6 +79,7 @@ async function check(name, fn) {
   await check('reset demo data restores the seed', async () => {
     await go('requests.html');
     await page.waitForSelector('.c-request-row');
+    await openDemo();
     await page.click('#demo-reset');
     await page.waitForSelector('dialog[open]');
     await Promise.all([page.waitForEvent('load'), page.click('dialog [data-value="ok"]')]);
@@ -55,7 +93,7 @@ async function check(name, fn) {
     await go('service.html?id=integration');
     await page.waitForSelector('h1:has-text("System integration")');
     assert.equal(await page.locator('.c-process li').count(), 4);
-    assert.match(await text('.c-detail-aside'), /Proposed deliverables/);
+    assert.match(await text('.c-detail-aside'), /Typical deliverables/);
     await page.click('.c-link-card');
     await page.waitForSelector('h1:has-text("Modernization roadmap")');
     await go('service.html?id=integration');
@@ -177,15 +215,17 @@ async function check(name, fn) {
     await page.waitForSelector('#f-site');
     await page.click('[data-review]');
     await page.waitForSelector('#rfq-submit');
+    await openDemo();
     await page.check('#demo-fail');
     await page.click('#rfq-submit');
     await page.waitForSelector('#rfq-submit-error:not([hidden])');
     await page.click('#rfq-submit-error [data-retry]');
-    // Step 7: confirmation with a reference and an honest note
+    // Step 7: confirmation with a reference and a next step
     await page.waitForSelector('.c-confirm');
     const confirmation = await text('.c-confirm');
-    assert.match(confirmation, new RegExp(reference));
-    assert.match(confirmation, /Nothing was sent/);
+    assert.match(confirmation, new RegExp(`saved with reference ${reference}`));
+    assert.match(confirmation, /My requests/);
+    assert.doesNotMatch(confirmation, PROTOTYPE_WORDS);
   });
 
   await check('my requests: list, filters, search empty state and submitted status', async () => {
@@ -230,6 +270,7 @@ async function check(name, fn) {
   await check('simulated load failure shows a recoverable error', async () => {
     await go('requests.html');
     await page.waitForSelector('.c-request-row');
+    await openDemo();
     await page.check('#demo-fail');
     await go('requests.html');
     await page.waitForSelector('.ui-state--error');
@@ -255,6 +296,7 @@ async function check(name, fn) {
     await page.locator('#c-message').blur();
     await page.waitForSelector('#c-message-error:not([hidden])');
     await page.fill('#c-message', 'Which program suits a plant with twenty critical motors?');
+    await openDemo();
     await page.check('#demo-fail');
     await page.click('#contact-submit');
     await page.waitForSelector('#contact-failure:not([hidden])');
@@ -262,11 +304,13 @@ async function check(name, fn) {
     await page.click('#contact-retry');
     await page.waitForSelector('#contact-success:not([hidden])');
     assert.match(await text('#contact-success'), /MSG-0001/);
-    assert.match(await text('#contact-success'), /Nothing was sent/);
+    assert.match(await text('#contact-success'), /Message saved/);
+    assert.doesNotMatch(await text('#contact-success'), PROTOTYPE_WORDS);
   });
 
   await check('reset after changes restores both examples', async () => {
     await go('index.html');
+    await openDemo();
     await page.click('#demo-reset');
     await page.waitForSelector('dialog[open]');
     await Promise.all([page.waitForEvent('load'), page.click('dialog [data-value="ok"]')]);

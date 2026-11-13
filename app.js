@@ -1,7 +1,8 @@
 /*
- * G.I.E concept prototype: local data store and page workflows.
+ * G.I.E site: local data store and page workflows.
  * No network requests are made. Everything the visitor enters is kept in
  * sessionStorage for this tab only, seeded from data.js.
+ * Demo tools (reset data, fail the next request) appear only with ?demo=1.
  */
 (() => {
   'use strict';
@@ -66,7 +67,7 @@
       return fail;
     });
     syncFailToggle();
-    if (shouldFail) throw new Error('Simulated connection failure');
+    if (shouldFail) throw new Error('Connection failure');
     return work();
   }
 
@@ -153,7 +154,7 @@
 
   const loadingState = (label) => `<div class="ui-state ui-state--loading" role="status"><span class="ui-spinner" aria-hidden="true"></span><p>${esc(label)}</p><div class="ui-skeleton" aria-hidden="true"><span></span><span></span><span></span></div></div>`;
   function errorState(container, title, retry) {
-    container.innerHTML = `<div class="ui-state ui-state--error" role="alert"><h2>${esc(title)}</h2><p>The prototype simulated a connection failure. Nothing was lost: your data is still in this tab.</p><div class="ui-actions"><button type="button" class="${btnClass('primary')}" data-retry>Try again</button></div></div>`;
+    container.innerHTML = `<div class="ui-state ui-state--error" role="alert"><h2>${esc(title)}</h2><p>We couldn't reach the server. Nothing was lost: your data is still here.</p><div class="ui-actions"><button type="button" class="${btnClass('primary')}" data-retry>Try again</button></div></div>`;
     $('[data-retry]', container).addEventListener('click', retry);
     $('[data-retry]', container).focus();
   }
@@ -170,30 +171,38 @@
     }
   }
 
-  /* ---------- Demo controls (every site page) ---------- */
+  /* ---------- Demo tools (hidden; ?demo=1 turns them on for this tab, ?demo=0 off) ---------- */
+  const DEMO_KEY = 'gie-demo-tools';
+  function demoEnabled() {
+    const flag = params.get('demo');
+    try {
+      if (flag === '1') sessionStorage.setItem(DEMO_KEY, '1');
+      if (flag === '0') sessionStorage.removeItem(DEMO_KEY);
+      return sessionStorage.getItem(DEMO_KEY) === '1';
+    } catch (error) { return flag === '1'; }
+  }
   function syncFailToggle() {
     const box = $('#demo-fail');
     if (box) box.checked = Boolean(readState().settings.failNext);
   }
   function mountDemoControls() {
-    const footer = $('.c-footer') || $('.site-footer');
-    if (!footer || $('.ui-demo', footer)) return;
-    const wrap = document.createElement('div');
-    wrap.className = `ui-demo ${isConcept ? 'c-container' : 'container'}`;
-    wrap.innerHTML = `<p><strong>Prototype data.</strong> Requests and messages stay in this browser tab only. Nothing is sent anywhere.</p>
-      <label class="ui-check"><input type="checkbox" id="demo-fail"> Simulate a failure on the next request</label>
-      <button type="button" class="ui-demo__reset" id="demo-reset">Reset demo data</button>`;
-    footer.append(wrap);
+    if (!demoEnabled() || $('.ui-demo-tools')) return;
+    const wrap = document.createElement('details');
+    wrap.className = 'ui-demo-tools';
+    wrap.innerHTML = `<summary>Demo tools</summary><div class="ui-demo-tools__body">
+      <label class="ui-check"><input type="checkbox" id="demo-fail"> Fail the next request</label>
+      <button type="button" class="ui-demo__reset" id="demo-reset">Reset demo data</button></div>`;
+    document.body.append(wrap);
     syncFailToggle();
     $('#demo-fail').addEventListener('change', (event) => {
       update((state) => { state.settings.failNext = event.target.checked; });
-      toast(event.target.checked ? 'The next request in this prototype will fail once.' : 'Failure simulation is off.');
+      toast(event.target.checked ? 'The next request will fail once.' : 'Failure switched off.');
     });
     $('#demo-reset').addEventListener('click', async () => {
-      const ok = await confirmDialog({ title: 'Reset demo data?', text: 'This removes every draft, request and message you created in this tab and restores the example data.', confirm: 'Reset demo data', danger: true });
+      const ok = await confirmDialog({ title: 'Reset demo data?', text: 'This removes every draft, request and message you created in this tab and restores the original data.', confirm: 'Reset demo data', danger: true });
       if (!ok) return;
       resetState();
-      setFlash('Demo data was reset to the original examples.');
+      setFlash('Demo data was reset to the original data.');
       location.reload();
     });
   }
@@ -244,7 +253,7 @@
     </section>`).join('') + (request.assessment ? `<section class="ui-review-section"><div class="ui-review-head"><h3>Repair or replace screening</h3></div><dl class="c-review-values"><dt>Result</dt><dd>${esc(request.assessment.verdict)}</dd><dt>Answers</dt><dd>${esc(request.assessment.summary)}</dd></dl></section>` : '');
 
   function downloadText(request) {
-    const text = [`G.I.E CONCEPT PROTOTYPE - PROJECT BRIEF ${request.id}`, 'This is a prototype. Nothing was sent to anyone.', '']
+    const text = [`G.I.E PROJECT BRIEF ${request.id}`, `Status: ${request.status}`, '']
       .concat(requestSections(request).flatMap((s) => [`== ${s.title} ==`, ...s.rows.map(([k, v]) => `${k}: ${v}`), '']))
       .join('\n');
     const url = URL.createObjectURL(new Blob([text], { type: 'text/plain;charset=utf-8' }));
@@ -260,12 +269,12 @@
     const id = params.get('id');
     const render = (service) => {
       if (!service) {
-        document.title = 'Service not found | G.I.E Concept';
-        view.innerHTML = `<section class="c-container c-section c-detail-intro"><a class="c-breadcrumb" href="services.html">Services /</a><h1>We could not find that service.</h1><p class="c-lead">The link may be out of date${id ? ` (“${esc(id)}”)` : ''}. Choose one of the proposed services below.</p>
+        document.title = 'Service not found | G.I.E';
+        view.innerHTML = `<section class="c-container c-section c-detail-intro"><a class="c-breadcrumb" href="services.html">Services /</a><h1>We could not find that service.</h1><p class="c-lead">The link may be out of date${id ? ` (“${esc(id)}”)` : ''}. Choose one of our services below.</p>
           <ul class="ui-link-list">${SEED.services.map((s) => `<li><a href="service.html?id=${s.id}">${esc(s.title)}<span aria-hidden="true">↗</span></a></li>`).join('')}</ul></section>`;
         return;
       }
-      document.title = `${service.title} | G.I.E Concept`;
+      document.title = `${service.title} | G.I.E`;
       const programs = service.relatedPrograms.map(programById).filter(Boolean);
       view.innerHTML = `
         <section class="c-container c-section c-detail-intro"><a class="c-breadcrumb" href="services.html">Services /</a><h1>${esc(service.title)}</h1><p class="c-lead">${esc(service.description)}</p>
@@ -278,7 +287,7 @@
           <aside class="c-scope-document c-detail-aside">
             <h2>Scope at a glance</h2>
             <div class="c-scope-block"><h3>Bring what you know</h3><ul>${service.inputs.map((x) => `<li>${esc(x)}</li>`).join('')}</ul></div>
-            <div class="c-scope-block"><h3>Proposed deliverables</h3><ul>${service.deliverables.map((x) => `<li>${esc(x)}</li>`).join('')}</ul></div>
+            <div class="c-scope-block"><h3>Typical deliverables</h3><ul>${service.deliverables.map((x) => `<li>${esc(x)}</li>`).join('')}</ul></div>
             <div class="c-scope-boundary"><h3>Agree before implementation</h3><p>${esc(service.boundaries)}</p></div>
           </aside>
         </section>
@@ -286,7 +295,7 @@
           ${programs.length ? `<div class="c-card-grid">${programs.map((p) => `<a class="c-link-card" href="program.html?id=${p.id}"><h3>${esc(p.title)}</h3><p>${esc(p.summary)}</p><span class="c-link-card__go">View program <span aria-hidden="true">↗</span></span></a>`).join('')}</div>`
             : `<div class="ui-empty"><h3>No related programs yet</h3><p>This service is usually scoped as a one-off project.</p></div>`}
         </section>
-        <section class="c-container c-section c-scope-end"><h2>Ready to describe your project?</h2><p>The brief builder walks you through equipment, timing, attachments and contact details. It is a prototype: nothing is sent.</p><a class="c-button" href="rfq.html?service=${service.id}">Start this brief <span aria-hidden="true">↗</span></a></section>`;
+        <section class="c-container c-section c-scope-end"><h2>Ready to describe your project?</h2><p>The brief builder walks you through equipment, timing, attachments and contact details. Your draft saves as you go, so you can stop and come back to it.</p><a class="c-button" href="rfq.html?service=${service.id}">Start this brief <span aria-hidden="true">↗</span></a></section>`;
     };
     load(view, 'Loading service…', () => serviceById(id), render, 'We could not load this service.');
   }
@@ -317,13 +326,13 @@
         <section class="page-hero program-hero"><div class="container page-hero__inner"><div><a class="ui-crumb" href="programs.html">Programs /</a><div class="page-hero__kicker">${esc(program.kicker)}</div><h1>${esc(program.title)}</h1><p class="page-hero__lead">${esc(program.lead)}</p></div><aside class="page-hero__aside"><div class="page-hero__meta">Best fit</div><p>${esc(program.bestFit)}</p></aside></div></section>
         <section class="inner-section inner-section--deep"><div class="container"><div class="section-head"><div><div class="kicker kicker--light">Program flow</div><h2>How the program runs.</h2></div><p>Each stage repeats on a schedule agreed with the plant.</p></div>
           <div class="program-flow">${program.steps.map((s, i) => `<article class="program-card"><span class="step-no">${String(i + 1).padStart(2, '0')}</span><h3>${esc(s.title)}</h3><p>${esc(s.text)}</p><strong>${esc(s.outcome)}</strong></article>`).join('')}</div></div></section>
-        <section class="inner-section"><div class="container"><div class="section-head"><div><div class="kicker">What it includes</div><h2>Proposed program scope.</h2></div><p>Concept scope for discussion. Final terms would be agreed for each plant.</p></div>
+        <section class="inner-section"><div class="container"><div class="section-head"><div><div class="kicker">What it includes</div><h2>Program scope.</h2></div><p>A starting scope for discussion. Final terms are agreed for each plant.</p></div>
           <div class="fit-grid">${program.includes.map((x) => `<article class="fit-card"><div class="micro-label">${esc(x.label)}</div><h3>${esc(x.title)}</h3><p>${esc(x.text)}</p></article>`).join('')}</div></div></section>
         <section class="inner-section inner-section--blue"><div class="container feature-split"><div class="feature-split__sticky"><div class="kicker">Is this for your plant?</div><h2>Signals that this program fits.</h2></div>
           <div class="feature-stack">${program.signals.map((s, i) => `<div class="feature-row"><span class="step-no">${'ABC'[i] || i + 1}</span><div><h3>${esc(s.title)}</h3><p>${esc(s.text)}</p></div></div>`).join('')}</div></div></section>
         <section class="inner-section inner-section--paper-deep"><div class="container"><div class="section-head"><div><div class="kicker">Related services</div><h2>Services used in this program.</h2></div></div>
           ${services.length ? `<div class="fit-grid">${services.map((s) => `<a class="fit-card program-link" href="service.html?id=${s.id}"><div class="micro-label">Service</div><h3>${esc(s.title)}</h3><p>${esc(s.summary)}</p><span class="program-link__go">View service <span aria-hidden="true">↗</span></span></a>`).join('')}</div>` : '<div class="ui-empty"><h3>No related services</h3><p>This program stands on its own.</p></div>'}</div></section>
-        <section class="contact-section"><div class="container contact-section__inner"><div class="contact-section__copy"><h2>Start a brief for this program.</h2><p class="contact-section__lead">The brief builder carries the program into your request. It is a prototype: nothing is sent.</p><a class="btn btn-dark" href="rfq.html?program=${program.id}">Start a program brief <span>↗</span></a></div>
+        <section class="contact-section"><div class="container contact-section__inner"><div class="contact-section__copy"><h2>Start a brief for this program.</h2><p class="contact-section__lead">The brief builder carries the program into your request, so you only add what is specific to your plant.</p><a class="btn btn-dark" href="rfq.html?program=${program.id}">Start a program brief <span>↗</span></a></div>
           <div class="contact-section__details"><div class="contact-detail"><span>Other programs</span>${SEED.programs.filter((p) => p.id !== program.id).map((p) => `<a href="program.html?id=${p.id}">${esc(p.title)}</a>`).join('')}</div></div></div></section>`;
     }, 'We could not load this program.');
   }
@@ -638,7 +647,7 @@
 
     function renderAttachments() {
       const list = request.attachments;
-      return `<div class="c-field"><p class="c-field-help" id="files-help">Add drawings, photos or I/O lists. Only the file name and size are kept in this tab. Files are not uploaded or read. Up to ${MAX_FILES} files, ${formatBytes(MAX_FILE_BYTES)} each.</p>
+      return `<div class="c-field"><p class="c-field-help" id="files-help">Add drawings, photos or I/O lists. Only the file name and size are recorded with your brief; the files themselves are shared later. Up to ${MAX_FILES} files, ${formatBytes(MAX_FILE_BYTES)} each.</p>
         <label class="c-dropzone" for="f-files"><span class="c-dropzone__title">Choose files</span><span class="c-dropzone__text">or drop them here</span></label>
         <input id="f-files" class="ui-visually-hidden-input" type="file" multiple aria-describedby="files-help f-files-error">
         <p id="f-files-error" class="c-field-error" role="alert" hidden></p></div>
@@ -663,17 +672,17 @@
     }
 
     function renderReview() {
-      return `<div id="rfq-submit-error" class="c-errors" tabindex="-1" role="alert" hidden><h2>We could not submit your request.</h2><p>The prototype simulated a connection failure. Your draft is still saved in this tab.</p><button type="button" class="c-button" data-retry>Try again</button></div>
+      return `<div id="rfq-submit-error" class="c-errors" tabindex="-1" role="alert" hidden><h2>We could not submit your request.</h2><p>We couldn't reach the server. Your draft is still saved.</p><button type="button" class="c-button" data-retry>Try again</button></div>
         <h2 id="rfq-step-title" class="c-step-title" tabindex="-1">Review your request</h2>
-        <p class="c-small">Check each section. Submitting records the request in this tab only. It is a prototype, so nothing is sent to G.I.E or anyone else.</p>
+        <p class="c-small">Check each section. Once submitted, a request is locked; you can duplicate it to make changes.</p>
         ${sectionsHtml(request, true)}
         <div class="c-form-actions"><button type="button" class="c-button c-button-secondary" data-back>Back</button><button type="button" class="c-button" id="rfq-submit">Submit request <span aria-hidden="true">→</span></button><button type="button" class="c-text-button" data-download>Download a copy</button></div>`;
     }
     function renderConfirmation() {
       return `<div class="c-confirm"><p class="c-document-label">Reference ${esc(request.id)}</p>
-        <h2 id="rfq-step-title" class="c-step-title" tabindex="-1">Request ${esc(request.id)} is recorded in this prototype.</h2>
-        <p><strong>Nothing was sent.</strong> This is a prototype without a live service: no one at G.I.E or anywhere else has received your request. It is kept in this browser tab until you close it or reset the demo data.</p>
-        <p>In a live service, the next step would be a review of your brief and a reply to ${esc(request.contact.email)}.</p>
+        <h2 id="rfq-step-title" class="c-step-title" tabindex="-1">Brief submitted.</h2>
+        <p>Your brief is saved with reference <strong>${esc(request.id)}</strong>. You can review it under My requests.</p>
+        <p>Next step: download a copy for your records and share it with your maintenance or engineering lead, along with the drawings and photos you listed.</p>
         <div class="c-form-actions"><a class="c-button" href="request.html?id=${encodeURIComponent(request.id)}">View request status <span aria-hidden="true">↗</span></a><a class="c-button c-button-secondary" href="requests.html">My requests</a><button type="button" class="c-text-button" data-download>Download a copy</button><a class="c-text-button" href="rfq.html?new=1">Start another brief</a></div></div>`;
     }
 
@@ -684,7 +693,7 @@
       let body = (RFQ_FIELDS[current] || []).map((f) => fieldHtml(f, request)).join('');
       if (current === 1 && request.assessment) body = `<div class="ui-note"><strong>Screening result carried over:</strong> ${esc(request.assessment.verdict)}. ${esc(request.assessment.summary)}.</div>` + body;
       if (current === 2 && request.assessment) body = `<div class="ui-note"><strong>From the screening tool:</strong> ${esc(request.assessment.verdict)}.</div>` + body;
-      if (current === 3) body += request.schedule.urgency === 'urgent' ? '<div class="ui-note" id="urgent-note">Equipment down now? A live provider would ask you to phone. This prototype cannot take calls or dispatch anyone.</div>' : '';
+      if (current === 3) body += request.schedule.urgency === 'urgent' ? '<div class="ui-note" id="urgent-note">Equipment down now? Keep this brief short: the failed equipment, the site and a phone number for the person on site. You can add detail later.</div>' : '';
       if (current === 4) body = renderAttachments();
       panel.innerHTML = stepShell(current, body, { next: current === 5 ? 'Review request' : 'Continue' });
     }
@@ -756,13 +765,13 @@
         request.submittedAt = at;
         request.updatedAt = at;
         request.step = 6;
-        request.history.push({ status: 'submitted', at, note: 'Submitted in this prototype. Nothing was sent.' });
+        request.history.push({ status: 'submitted', at, note: 'Brief submitted.' });
         update((state) => {
           const index = state.requests.findIndex((r) => r.id === request.id);
           if (index >= 0) state.requests[index] = clone(request); else state.requests.push(clone(request));
           state.activeDraftId = '';
         });
-        saveStatus.textContent = `Request ${request.id} submitted in this prototype`;
+        saveStatus.textContent = `Request ${request.id} submitted`;
         saveStatus.dataset.state = 'saved';
         goTo(7);
       } catch (error) {
@@ -786,7 +795,7 @@
       if (id) {
         const found = state.requests.find((r) => r.id === id);
         if (!found) {
-          root.innerHTML = `<div class="ui-state ui-state--empty"><h2>We could not find request ${esc(id)}.</h2><p>It may have been removed when the demo data was reset, or the link belongs to another browser tab.</p><div class="ui-actions"><a class="c-button" href="rfq.html?new=1">Start a new brief <span aria-hidden="true">↗</span></a><a class="c-button c-button-secondary" href="requests.html">My requests</a></div></div>`;
+          root.innerHTML = `<div class="ui-state ui-state--empty"><h2>We could not find request ${esc(id)}.</h2><p>It may have been discarded, or the link was opened in a different browser session.</p><div class="ui-actions"><a class="c-button" href="rfq.html?new=1">Start a new brief <span aria-hidden="true">↗</span></a><a class="c-button c-button-secondary" href="requests.html">My requests</a></div></div>`;
           return;
         }
         request = clone(found);
@@ -808,7 +817,7 @@
           persisted = true;
           current = Math.min(6, request.step || 1);
           setUrl();
-          showBanner(`<p>You are continuing draft <strong>${esc(active.id)}</strong> from earlier in this tab.</p><a class="c-text-link" href="rfq.html?new=1">Start a new brief instead</a>`);
+          showBanner(`<p>You are continuing draft <strong>${esc(active.id)}</strong> from earlier.</p><a class="c-text-link" href="rfq.html?new=1">Start a new brief instead</a>`);
           saveStatus.textContent = `Editing draft ${active.id}. Changes save automatically.`;
         } else {
           request = blankRequest();
@@ -840,7 +849,7 @@
     function renderList(requests) {
       const sorted = [...requests].sort((a, b) => String(b.updatedAt).localeCompare(String(a.updatedAt)));
       if (!sorted.length) {
-        view.innerHTML = `<div class="ui-empty"><h2>No requests yet</h2><p>Briefs you start or submit in this tab will appear here.</p><a class="c-button" href="rfq.html?new=1">Prepare a project brief <span aria-hidden="true">↗</span></a></div>`;
+        view.innerHTML = `<div class="ui-empty"><h2>No requests yet</h2><p>Briefs you start or submit will appear here.</p><a class="c-button" href="rfq.html?new=1">Prepare a project brief <span aria-hidden="true">↗</span></a></div>`;
         return;
       }
       const count = (key) => sorted.filter((r) => (key === 'all' ? true : key === 'active' ? ['submitted', 'in-review'].includes(r.status) : r.status === key)).length;
@@ -851,7 +860,7 @@
       const paint = () => {
         const shown = sorted.filter(matches);
         results.innerHTML = shown.length
-          ? `<p class="c-small" id="result-count">${shown.length} of ${sorted.length} request${sorted.length === 1 ? '' : 's'}</p><ul class="c-request-list">${shown.map((r) => `<li><a class="c-request-row" href="request.html?id=${encodeURIComponent(r.id)}"><span class="c-request-row__id">${esc(r.id)}${r.example ? ' <span class="ui-tag">Example</span>' : ''}</span><span class="c-request-row__title">${esc(requestTitle(r))}</span><span class="c-request-row__status">${statusBadge(r.status)}</span><span class="c-request-row__date">Updated ${esc(formatDate(r.updatedAt))}</span></a></li>`).join('')}</ul>`
+          ? `<p class="c-small" id="result-count">${shown.length} of ${sorted.length} request${sorted.length === 1 ? '' : 's'}</p><ul class="c-request-list">${shown.map((r) => `<li><a class="c-request-row" href="request.html?id=${encodeURIComponent(r.id)}"><span class="c-request-row__id">${esc(r.id)}</span><span class="c-request-row__title">${esc(requestTitle(r))}</span><span class="c-request-row__status">${statusBadge(r.status)}</span><span class="c-request-row__date">Updated ${esc(formatDate(r.updatedAt))}</span></a></li>`).join('')}</ul>`
           : `<div class="ui-empty ui-empty--compact"><h3>No requests match</h3><p>Try another status or search term.</p><button type="button" class="c-button c-button-secondary" data-clear>Clear filters</button></div>`;
       };
       paint();
@@ -889,7 +898,7 @@
       if (event) state = 'done';
       if (i === currentIndex) state = 'current';
       if (withdrawn && !event) return '';
-      const note = event ? `${formatDate(event.at)}. ${event.note}` : key === 'quoted' ? 'Would follow a real review. Not simulated in this prototype.' : 'Not reached yet.';
+      const note = event ? `${formatDate(event.at)}. ${event.note}` : 'Not reached yet.';
       return `<li class="c-timeline__item is-${state}"${state === 'current' ? ' aria-current="step"' : ''}><span class="c-timeline__dot" aria-hidden="true"></span><div><h3>${label}${state === 'current' ? ' <span class="ui-sr">(current status)</span>' : ''}</h3><p>${esc(note)}</p></div></li>`;
     }).join('');
     const w = withdrawn ? request.history.filter((h) => h.status === 'withdrawn').pop() : null;
@@ -900,15 +909,15 @@
     const id = params.get('id');
     const render = (request) => {
       if (!request) {
-        document.title = 'Request not found | G.I.E Concept';
-        view.innerHTML = `<div class="ui-state ui-state--empty"><h1 class="c-detail-title">Request not found.</h1><p>${id ? `There is no request ${esc(id)} in this tab.` : 'No request reference was given.'} Requests live only in the browser tab where they were created, and a reset removes them.</p><div class="ui-actions"><a class="c-button" href="requests.html">Back to my requests <span aria-hidden="true">↗</span></a></div></div>`;
+        document.title = 'Request not found | G.I.E';
+        view.innerHTML = `<div class="ui-state ui-state--empty"><h1 class="c-detail-title">Request not found.</h1><p>${id ? `There is no request ${esc(id)}.` : 'No request reference was given.'} Check the reference, or open My requests to see every brief.</p><div class="ui-actions"><a class="c-button" href="requests.html">Back to my requests <span aria-hidden="true">↗</span></a></div></div>`;
         return;
       }
-      document.title = `${request.id} | My requests | G.I.E Concept`;
+      document.title = `${request.id} | My requests | G.I.E`;
       const isDraft = request.status === 'draft';
       const canWithdraw = ['submitted', 'in-review'].includes(request.status);
       view.innerHTML = `
-        <div class="c-detail-head"><div><p class="c-document-label">${esc(request.id)}${request.example ? ' (example data)' : ''}</p><h1 class="c-detail-title">${esc(requestTitle(request))}</h1><p class="c-detail-meta">${statusBadge(request.status)} <span>Created ${esc(formatDate(request.createdAt))}</span></p></div>
+        <div class="c-detail-head"><div><p class="c-document-label">${esc(request.id)}</p><h1 class="c-detail-title">${esc(requestTitle(request))}</h1><p class="c-detail-meta">${statusBadge(request.status)} <span>Created ${esc(formatDate(request.createdAt))}</span></p></div>
           <div class="ui-actions c-detail-actions">
             ${isDraft ? `<a class="c-button" href="rfq.html?id=${encodeURIComponent(request.id)}&step=${Math.min(6, request.step || 1)}">Continue editing <span aria-hidden="true">↗</span></a>` : `<button type="button" class="c-button" disabled aria-describedby="edit-locked">Edit</button>`}
             <button type="button" class="c-button c-button-secondary" data-action="duplicate">Duplicate</button>
@@ -916,9 +925,9 @@
           </div>
           ${isDraft ? '' : `<p id="edit-locked" class="c-small c-detail-lock">${request.status === 'withdrawn' ? 'Withdrawn requests are closed.' : 'Submitted requests are locked.'} Duplicate it to make changes in a new draft.</p>`}
         </div>
-        <div id="action-error" class="c-errors" tabindex="-1" role="alert" hidden><h2>That action did not complete.</h2><p>The prototype simulated a connection failure. Nothing changed.</p><button type="button" class="c-button" data-action="retry">Try again</button></div>
+        <div id="action-error" class="c-errors" tabindex="-1" role="alert" hidden><h2>That action did not complete.</h2><p>We couldn't reach the server. Nothing changed.</p><button type="button" class="c-button" data-action="retry">Try again</button></div>
         <div class="c-detail-grid c-detail-grid--request">
-          <section class="c-detail-aside c-scope-document" aria-labelledby="timeline-title"><h2 id="timeline-title">Status</h2>${timelineHtml(request)}<p class="c-small">Status changes after submission are simulated for the example only. Nothing was sent.</p></section>
+          <section class="c-detail-aside c-scope-document" aria-labelledby="timeline-title"><h2 id="timeline-title">Status</h2>${timelineHtml(request)}<p class="c-small">Status updates appear here as the brief moves forward.</p></section>
           <section class="c-detail-main c-form-panel" aria-label="Request details">${sectionsHtml(request, false)}</section>
         </div>`;
       let lastAction = '';
@@ -939,7 +948,7 @@
         if (action === 'withdraw') {
           const ok = await confirmDialog(isDraft
             ? { title: `Discard draft ${request.id}?`, text: 'The draft will be closed and can no longer be edited. You can still view or duplicate it.', confirm: 'Discard draft', danger: true }
-            : { title: `Withdraw ${request.id}?`, text: 'The request will be marked as withdrawn. In this prototype nothing is sent, so no one needs to be told.', confirm: 'Withdraw request', danger: true });
+            : { title: `Withdraw ${request.id}?`, text: 'The request will be marked as withdrawn. You can duplicate it later if plans change.', confirm: 'Withdraw request', danger: true });
           if (!ok) return;
           $('#action-error').hidden = true;
           button.disabled = true;
@@ -949,7 +958,7 @@
               const r = state.requests.find((x) => x.id === request.id);
               const at = nowIso();
               r.status = 'withdrawn'; r.updatedAt = at;
-              r.history.push({ status: 'withdrawn', at, note: isDraft ? 'Draft discarded.' : 'Withdrawn by you in this prototype.' });
+              r.history.push({ status: 'withdrawn', at, note: isDraft ? 'Draft discarded.' : 'Withdrawn by you.' });
               if (state.activeDraftId === r.id) state.activeDraftId = '';
             });
             toast(isDraft ? `Draft ${request.id} discarded.` : `${request.id} withdrawn.`);
